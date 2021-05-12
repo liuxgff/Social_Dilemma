@@ -9,174 +9,115 @@
 import random
 import numpy as np
 
-from TestModelNumber import number
-
-# 生成垃圾的概率
-GARBAGE_R = 0.15
-GARBAGES = 10
-
-# 生成苹果的概率
-APPLE_R = 0.1
-APPLES = 5
-
-# agent的视野窗口5*5
-win_width = 5
-view = 2
-
-if number == 1 or number == 0:
-    # Agent的初始位置
-    APPEL_REGION = 0  # 区域1垃圾增长区域
-    GARBAGE_REGION = 1  # 区域4垃圾增长区域
-    # Agent最大满足度设置
-    AMSAT = 20
-    BMSAT = 200
-    CMSAT = 200
-    DMSAT = 20
-
 
 class Cleanup:
-    def __init__(self, ROW=14, COL=14, apple_init_Num=5, garbage_init_Num=10, AgentsList=None):
-        self.Map_table = np.empty((ROW, COL), dtype=np.str)  # 创建地图
-        self.Apple_N = apple_init_Num  # 苹果的初始个数
-        self.Garbage_N = garbage_init_Num  # 垃圾的初始个数
-        self.AgentsList = AgentsList  # 玩家列表
+    def __init__(self, ROW=12, COL=20, appleRate=0.1, garbageRate=0.15, agentsList=None, InitRandAddress=True):
+        self.ROW = ROW  # 地图的宽
+        self.COL = COL   # 地图的长
+        self.Map_table = None  # 创建地图
+        self.apple_N = 0  # 苹果的个数
+        self.garbage_N = 0  # 垃圾的个数
+        self.appleMaxRate = appleRate
+        self.appleRate = 0  # 垃圾的生长率系数
+        self.garbageRate = garbageRate  # 苹果的生长率系数
+        self.agentsList = agentsList  # 玩家列表
+        self.initRandAddress = InitRandAddress  # 玩家初始位置
+        self.doAction = [[-1, 1, 0, 0], [0, 0, -1, 1]]  # 动作矩阵，上下左右
+        self.endAppleNum = 0  # 采集苹果的数量
 
-        self.Init_Map = self.Map_table  # 记录地图的初始位置
+        self.aStr = '+'  # 苹果表示
+        self.gStr = '-'  # 垃圾表示
 
-        self.action_space = ['up', 'down', 'left', 'right']  # 玩家移动的方向
-        self.actions = len(self.action_space)
-        self.n_features = win_width * win_width * 3  # 神经网络输入数据长度(Agent信息M)
-        self.Grate = GARBAGE_R  # 垃圾的生长率系数
-        self.Arate = APPLE_R  # 苹果的生长率系数
-        self.reward = 0  # 采集苹果的数量
-        self.RoundA = [0] * len(self.Agents)  # 每个玩家每轮采集苹果的数量
-        self.RoundG = [0] * len(self.Agents)  # 每个玩家每轮采集垃圾的数量
         self.build()  # 创建地图
-        self.updata()  # 更新数据
+        self.updateRate()  # 更新数据
 
     # 建立地图
     def build(self):
+        """
+        地图分为上下两部分，上部分区域为垃圾区域，下部分为苹果区域
+        地图总大小: 12 * 20 ; 每小块地图大小: 6 * 10
+        新建地图时，垃圾和苹果的随机增长概率Rate = 0.2
+        """
+        INIT_RATE = 0.05
+        self.Map_table = np.empty((self.ROW, self.COL), dtype=np.str_)  # 初始化地图
         # 地图初始化
-        for i in range(ROW):
-            for j in range(COL):
-                self.Map_table[i, j] = ' '
-        '-------------------四块游戏地图-------------------'
-        "地图总大小: 14 * 14 ; 每小块地图大小: 7 * 7"
-        "新建地图时，垃圾和苹果的随机增长概率Rate = 0.2"
-        Rate = 0.1
-        for i in range(0, int(ROW / 2)):
-            # 第一块地图, 垃圾增长区域
-            for j in range(0, int(COL / 2)):
-                if random.random() <= Rate and self.Map_table[i, j] == ' ':
-                    self.Map_table[i, j] = '-'
-                    self.Garbage_N += 1
-            # 第二块地图, 苹果增长区域
-            for j in range(int(COL / 2), COL):
-                if random.random() <= Rate and self.Map_table[i, j] == ' ':
-                    self.Map_table[i, j] = '+'
-                    self.Apple_N += 1
-
-        for i in range(int(ROW / 2), ROW):
-            # 第三块地图, 苹果增长区域
-            for j in range(0, int(COL / 2)):
-                if random.random() <= Rate and self.Map_table[i, j] == ' ':
-                    self.Map_table[i, j] = '+'
-                    self.Apple_N += 1
-            # 第四块地图, 垃圾增长区域
-            for j in range(int(COL / 2), COL):
-                if random.random() <= Rate and self.Map_table[i, j] == ' ':
-                    self.Map_table[i, j] = '-'
-                    self.Garbage_N += 1
-        '-------------------------------------------------'
+        for i in range(self.ROW):
+            for j in range(self.COL):
+                if 0 <= i < self.ROW // 2 and random.random() <= INIT_RATE:  # 如果在垃圾增长的区域, 随机增长垃圾
+                    self.Map_table[i, j] = self.gStr
+                    self.garbage_N += 1
+                elif self.ROW // 2 <= i < self.ROW and random.random() <= INIT_RATE:  # 如果在苹果区域，随机生成苹果
+                    self.Map_table[i, j] = self.aStr
+                    self.apple_N += 1
+                else:  # 否则为空
+                    self.Map_table[i, j] = ' '
+        self.set_init_agents()  # 放置agents
+        self.updateRate()  # 更新数据
 
     # 生成Agent初始坐标
-    def set_init_address(self, regionNum):
-        # #######################################################
-        # 第一块区域(垃圾增长区域)[row坐标(0, int(ROW / 2) - 1)]; [col坐标(0, int(COL / 2) - 1)]
-        # 第二块区域(苹果增长区域)[row坐标(0, int(ROW / 2) - 1)]; [col坐标(int(COL / 2), COL - 1)]
-        # 第三块区域(苹果增长区域)[row坐标(int(ROW / 2), ROW - 1)]; [col坐标(0, int(COL / 2) - 1)]
-        # 第四块区域(垃圾增长区域)[row坐标(int(ROW / 2), ROW - 1)]; [col坐标(int(COL / 2), COL - 1)]
-        # #######################################################
-        if regionNum == 1:
-            tempROW = random.randint(0, int(ROW / 2) - 1)
-            tempCOL = random.randint(0, int(COL / 2) - 1)
-        elif regionNum == 2:
-            tempROW = random.randint(0, int(ROW / 2) - 1)
-            tempCOL = random.randint(int(COL / 2), COL - 1)
-        elif regionNum == 3:
-            tempROW = random.randint(int(ROW / 2), ROW - 1)
-            tempCOL = random.randint(0, int(COL / 2) - 1)
-        elif regionNum == 4:
-            tempROW = random.randint(int(ROW / 2), ROW - 1)
-            tempCOL = random.randint(int(COL / 2), COL - 1)
-        return tempROW, tempCOL
-
-    # 生成玩家
-    def create_agent(self):
-        # 创建玩家的初始位置
-        self.Agent_address = []  # 玩家的坐标
-        '------------第一块垃圾增长区域生成一个agent-----------'
-        A_row, A_col = self.set_init_address(AREGION)
-        while self.Map_table[A_row, A_col] != ' ':
-            A_row, A_col = self.set_init_address(AREGION)
-        self.Map_table[A_row, A_col] = 'A'
-        # 记录玩家坐标
-        self.Agent_address.append((A_row, A_col))
-
-        '------------第二块苹果增长区域生成一个agent-----------'
-        B_row, B_col = self.set_init_address(BREGION)
-        while self.Map_table[B_row, B_col] != ' ':
-            B_row, B_col = self.set_init_address(BREGION)
-        self.Map_table[B_row, B_col] = 'B'
-        self.Agent_address.append((B_row, B_col))
-
-        '------------第三块苹果增长区域生成一个agent-----------'
-        C_row, C_col = self.set_init_address(CREGION)
-        while self.Map_table[C_row, C_col] != ' ':
-            C_row, C_col = self.set_init_address(CREGION)
-        self.Map_table[C_row, C_col] = 'C'
-        self.Agent_address.append((C_row, C_col))
-
-        '------------第四块垃圾增长区域生成一个agent-----------'
-        D_row, D_col = self.set_init_address(DREGION)
-        while self.Map_table[D_row, D_col] != ' ':
-            D_row, D_col = self.set_init_address(DREGION)
-        self.Map_table[D_row, D_col] = 'D'
-        self.Agent_address.append((D_row, D_col))
+    def set_init_agents(self):
+        """
+        创建Agents的初始位置
+        :return:
+        """
+        for agent in self.agentsList:
+            if self.initRandAddress:  # 如果agent位置是随机
+                while True:
+                    x = random.randint(0, self.ROW - 1)
+                    y = random.randint(0, self.COL - 1)
+                    if self.Map_table[x, y] == ' ':  # 如果该位置为空可以安置agent
+                        break
+                agent.address = [x, y]
+            else:
+                if agent.selectAddress == 0:  # selectAddress == 0表示初始位置在垃圾区域
+                    while True:
+                        x = random.randint(0, self.ROW // 2 - 1)
+                        y = random.randint(0, self.COL - 1)
+                        if self.Map_table[x, y] == ' ':  # 如果该位置为空可以安置agent
+                            break
+                    agent.address = [x, y]
+                elif agent.selectAddress == 1:  # selectAddress == 1表示初始位置在苹果区域
+                    while True:
+                        x = random.randint(self.ROW // 2, self.ROW - 1)
+                        y = random.randint(0, self.COL - 1)
+                        if self.Map_table[x, y] == ' ':  # 如果该位置为空可以安置agent
+                            break
+                    agent.address = [x, y]
+            self.Map_table[x, y] = agent.name
 
     # 地图初始化
     def newMap(self):
-        self.reward = 0  # 采集苹果的总个数
-        self.Agent_reward = [0] * len(self.Agents)  # 每个玩家的外部奖励积分值
-        '------玩家满意度设置------'
-        self.Agent_satisfaction = [0] * len(self.Agents)  # 每个玩家的满意度
-        '------------------------'
-        self.RoundA = [0] * len(self.Agents)  # 每个玩家每轮采集苹果的数量
-        self.RoundG = [0] * len(self.Agents)  # 每个玩家每轮采集垃圾的数量
-        self.Apple_N = APPLES  # 苹果的初始个数
-        self.Garbage_N = GARBAGES  # 垃圾的初始个数
+        self.endAppleNum = 0  # 采集苹果的总个数
+        self.apple_N = 0  # 苹果的个数
+        self.garbage_N = 0  # 垃圾的个数
         self.build()  # 创建地图
-        self.create_agent()
-        self.updata()
+
+    # 更新苹果的增长率
+    def updateRate(self):
+        k = -self.appleMaxRate / (self.ROW / 4 * self.COL)  # 苹果增长率与垃圾数量的线性斜率
+        self.appleRate = k * self.garbage_N + self.appleMaxRate
 
     # 获取Agent的信息
-    def getAgent(self, num):  # num为第几个Agent
+    def getAgent(self, agentNum):  # num为第几个Agent
         M = np.array([])
         M = M.astype('float')
 
         'agent的坐标'
-        x = self.Agent_address[num][0]
-        y = self.Agent_address[num][1]
+        x = self.agentsList[agentNum].address[0]
+        y = self.agentsList[agentNum].address[1]
 
         'agent视野的起始位置、终止位置'
-        sx = x - view  # 视野起始x
-        sy = y - view  # 视野起始y
-        ex = x + view  # 视野终止x
-        ey = y + view  # 视野终止y
+        sx = x - self.agentsList[agentNum].view  # 视野起始x
+        sy = y - self.agentsList[agentNum].view  # 视野起始y
+        ex = x + self.agentsList[agentNum].view  # 视野终止x
+        ey = y + self.agentsList[agentNum].view  # 视野终止y
+
+        '视野大小'
+        viewSize = (self.agentsList[agentNum].view * 2 + 1) ** 2
 
         'Agent的满足度占比'
-        sPercent = int((self.Agent_satisfaction[num] / self.Max_satisfaction[num]) * (win_width * win_width))
-        for i in range(win_width * win_width):
+        sPercent = int((self.agentsList[agentNum].currentSatisfaction / self.agentsList[agentNum].MaxSatisfaction) * viewSize)
+        for i in range(viewSize):
             if sPercent:
                 M = np.append(M, 1)
                 sPercent -= 1
@@ -186,8 +127,8 @@ class Cleanup:
         # 苹果的位置
         for i in range(sx, ex + 1):
             for j in range(sy, ey + 1):
-                if 0 <= i < ROW and 0 <= j < COL:  # 防止出界
-                    if self.Map_table[i, j] == '+':
+                if 0 <= i < self.ROW and 0 <= j < self.COL:  # 防止出界
+                    if self.Map_table[i, j] == self.aStr:
                         M = np.append(M, 1)
                     else:
                         M = np.append(M, 0)
@@ -197,8 +138,8 @@ class Cleanup:
         # 垃圾的位置
         for i in range(sx, ex + 1):
             for j in range(sy, ey + 1):
-                if 0 <= i < ROW and 0 <= j < COL:
-                    if self.Map_table[i, j] == '-':
+                if 0 <= i < self.ROW and 0 <= j < self.COL:
+                    if self.Map_table[i, j] == self.gStr:
                         M = np.append(M, 1)
                     else:
                         M = np.append(M, 0)
@@ -207,199 +148,142 @@ class Cleanup:
         return M
 
     # 检测Agent是否出界
-    def is_state(self, i, action):
-        x = self.Agent_address[i][0]
-        y = self.Agent_address[i][1]
-        mark = 0
-        # up
-        if action == 0:
-            if x == 0:
-                mark = 1
-        # down
-        if action == 1:
-            if x == ROW - 1:
-                mark = 1
-        # left
-        if action == 2:
-            if y == 0:
-                mark = 1
-        # right
-        if action == 3:
-            if y == COL - 1:
-                mark = 1
-        return mark
+    def is_state(self, agentNum, action):
+        """
+        :param agentNum: agent编号
+        :param action: 动作
+        :return:
+        """
+        x = self.agentsList[agentNum].address[0] + self.doAction[0][action]
+        y = self.agentsList[agentNum].address[1] + self.doAction[1][action]
+        if 0 <= x < self.ROW and 0 <= y < self.COL:  # 未出界
+            return False
+        else:  # 出界
+            return True
 
     # Agent移动
-    def move(self, action, num):  # i为第几个Agent
-        x = self.Agent_address[num][0]
-        y = self.Agent_address[num][1]
-        x_ = x
-        y_ = y
-        R = 0
-        # up
-        if action == 0:
-            x_ = x - 1
-        # down
-        if action == 1:
-            x_ = x + 1
-        # left
-        if action == 2:
-            y_ = y - 1
-        # right
-        if action == 3:
-            y_ = y + 1
+    def move(self, agentNum, action):
+        """
+        :param agentNum: agent编号
+        :param action: 动作
+        :return:
+        """
+        # 移动前的坐标
+        x = self.agentsList[agentNum].address[0]
+        y = self.agentsList[agentNum].address[1]
+        # 移动后的坐标
+        x_ = x + self.doAction[0][action]
+        y_ = y + self.doAction[1][action]
 
-        # 如果新的位置是苹果------------------------------------------star
-        if self.Map_table[x_, y_] == '+':
-            self.reward += 1  # 获取苹果数量加1
-            self.Apple_N -= 1  # 苹果数量减一
-            self.RoundA[num] += 1  # 每轮agent采集苹果的数量
-            '--------------采集苹果获得奖励--------------star'
-            ar = 0.1  # 奖励系数
-            if self.Agent_satisfaction[num] < self.Max_satisfaction[num]:
-                R = (self.Max_satisfaction[num] - self.Agent_satisfaction[num]) * ar
-            else:
-                R = 0.1
-            self.Agent_satisfaction[num] += R / 10
-            # print("玩家：", num, "满意度:", self.Agent_satisfaction[num], "采集苹果奖励：", R)
-            '--------------采集苹果获得奖励--------------end'
-        # 如果新的位置是苹果-------------------------------------------end
+        Reward = 0
 
-        # 如果新位置为空
+        "如果新的位置是苹果"
+        if self.Map_table[x_, y_] == self.aStr:
+            self.endAppleNum += 1  # 获取苹果数量加1
+            self.apple_N -= 1  # 苹果数量减一
+            self.agentsList[agentNum].ownAppleNum += 1  # 每轮agent采集苹果的数量
+            # 采集苹果获得奖励
+            realReward = 10  # 实际奖励
+            self.agentsList[agentNum].currentSatisfaction += realReward
+            Reward = realReward
+
+        "如果新位置为空"
         if self.Map_table[x_, y_] == ' ':
-            R = -5
+            Reward = 0
 
-        # 如果agent移动到垃圾清理区域---------------------------------star
-        if (0 <= x_ <= int(ROW / 2) and 0 <= y_ <= int(COL / 2)) or \
-                (int(ROW / 2) <= x_ < ROW and int(COL / 2) <= y_ < COL):
-            window = 2
-            beginx = 0
-            endx = 0
-            beginy = 0
-            endy = 0
+        "如果agent移动到垃圾清理区域"
+        if x_ < self.ROW//2:
+            # agent的视野
             if action == 0:  # agent向上走
-                # 先清除当前agent眼前的垃圾
-                beginx = x - window
-                endx = x
-                beginy = y - 1
-                endy = y + 1
-            if action == 1:  # 如果agent向下走
-                beginx = x
-                endx = x + window
-                beginy = y - 1
-                endy = y + 1
-            if action == 2:  # agent向左走
-                beginx = x - 1
-                endx = x + 1
-                beginy = y - window
-                endy = y
-            if action == 3:  # agent向右走
-                beginx = x - 1
-                endx = x + 1
-                beginy = y
-                endy = y + window
+                begin_x = x_ - self.agentsList[agentNum].view
+                end_x = x_
+                begin_y = y_ - 1
+                end_y = y_ + 1
+            elif action == 1:  # 如果agent向下走
+                begin_x = x_
+                end_x = x_ + self.agentsList[agentNum].view
+                begin_y = y_ - 1
+                end_y = y_ + 1
+            elif action == 2:  # agent向左走
+                begin_x = x_ - 1
+                end_x = x_ + 1
+                begin_y = y_ - self.agentsList[agentNum].view
+                end_y = y_
+            else:  # agent向右走
+                begin_x = x_ - 1
+                end_x = x_ + 1
+                begin_y = y_
+                end_y = y_ + self.agentsList[agentNum].view
 
             # 清除agent眼前的垃圾
             temp_num_g = 0  # 记录清除了多少个垃圾
-            for cx in range(beginx, endx + 1):
-                for cy in range(beginy, endy + 1):
-                    if (0 <= cx <= int(ROW / 2) and 0 <= cy <= int(COL / 2)) or \
-                            (int(ROW / 2) <= cx < ROW and int(COL / 2) <= cy < COL):
-                        if self.Map_table[cx, cy] == '-':
+            for cx in range(begin_x, end_x + 1):
+                for cy in range(begin_y, end_y + 1):
+                    if 0 <= cx < self.ROW // 2 and 0 <= cy < self.COL:
+                        if self.Map_table[cx, cy] == self.gStr:
                             self.Map_table[cx, cy] = ' '
-                            self.Garbage_N -= 1
+                            self.garbage_N -= 1
                             temp_num_g += 1
+            # 每轮agent采集垃圾的数量
+            temp_num_g = temp_num_g / ((self.agentsList[agentNum].view + 1) ** 2)
+            self.agentsList[agentNum].ownGarbageNum += temp_num_g
+            # 清理垃圾获得奖励
+            realReward = temp_num_g * 5
+            self.agentsList[agentNum].currentSatisfaction += realReward
+            Reward = realReward
 
-            '--------------清理垃圾获得奖励--------------star'
-            self.RoundG[num] += temp_num_g / 6  # 每轮agent采集垃圾的数量
-            dr = 0.6  # 奖励系数
-            R = dr * temp_num_g
-            self.Agent_satisfaction[num] += R
-            # print("玩家：", num, "满意度:", self.Agent_satisfaction[num], "清理垃圾奖励：", R)
-            '--------------清理垃圾获得奖励--------------end'
-        # 如果agent移动到垃圾清理区域---------------------------------end
-
-        # 移动agent到新位置，且如果新位置是另一个Agent
-        if self.Map_table[x_, y_] != ' ' and self.Map_table[x_, y_] != '+' and self.Map_table[x_, y_] != '-':
+        "移动agent到新位置"
+        # 如果新位置是另一个Agent
+        if self.Map_table[x_, y_] != ' ' and self.Map_table[x_, y_] != self.gStr and self.Map_table[x_, y_] != self.aStr:
             x_ = x
             y_ = y
-        self.Agent_address[num] = (x_, y_)  # Agent位置更新
-        self.Map_table[x, y] = ' '  # 清空Agent原来的位置
-        self.Map_table[x_, y_] = self.Agents[num]  # agent放置新位置
-        self.updata()  # 更新增长率
-        return R
 
-    # 更新垃圾和苹果的增长率
-    def updata(self):
-        # 苹果的增长率
-        k = -APPLE_R / (win_width * win_width * 2)  # 苹果增长率与垃圾数量的线性斜率
-        self.Arate = k * self.Garbage_N + APPLE_R
+        # Agent位置更新
+        self.agentsList[agentNum].address = [x_, y_]
+        self.Map_table[x, y] = ' '  # 清空Agent原来的位置
+        self.Map_table[x_, y_] = self.agentsList[agentNum].name  # agent放置新位置
+        self.updateRate()  # 更新增长率
+
+        print(self.agentsList[agentNum].name, self.agentsList[agentNum].currentSatisfaction)
+        return Reward
 
     # 垃圾再生长
-    def upG(self):
-        # 更新垃圾
-        # 第一块地图, 垃圾增长区域
-        for i in range(0, int(ROW / 2)):
-            for j in range(0, int(COL / 2)):
-                if random.random() <= self.Grate and self.Map_table[i, j] == ' ':
-                    self.Map_table[i, j] = '-'
-                    self.Garbage_N += 1
-
-        # 第四块地图, 垃圾增长区域
-        for i in range(int(ROW / 2), ROW):
-            for j in range(int(COL / 2), COL):
-                if random.random() <= self.Grate and self.Map_table[i, j] == ' ':
-                    self.Map_table[i, j] = '-'
-                    self.Garbage_N += 1
+    def updateGarbage(self):
+        for i in range(self.ROW//2):
+            for j in range(self.COL):
+                if random.random() <= self.garbageRate and self.Map_table[i, j] == ' ':  # 如果在垃圾增长的区域, 更新垃圾
+                    self.Map_table[i, j] = self.gStr
+                    self.garbage_N += 1
         # 更新增长率
-        self.updata()
+        self.updateRate()
 
     # 苹果再生长
-    def upA(self):
-        # 更新苹果
-        # 第二块地图, 苹果增长区域
-        for i in range(0, int(ROW / 2)):
-            for j in range(int(COL / 2), COL):
-                if random.random() <= self.Arate and self.Map_table[i, j] == ' ':
-                    self.Map_table[i, j] = '+'
-                    self.Apple_N += 1
-        # 第三块地图, 苹果增长区域
-        for i in range(int(ROW / 2), ROW):
-            for j in range(0, int(COL / 2)):
-                if random.random() <= self.Arate and self.Map_table[i, j] == ' ':
-                    self.Map_table[i, j] = '+'
-                    self.Apple_N += 1
+    def updateApple(self):
+        for i in range(self.ROW//2, self.ROW):
+            for j in range(self.COL):
+                if random.random() <= self.appleRate and self.Map_table[i, j] == ' ':  # 如果在苹果区域，更新苹果
+                    self.Map_table[i, j] = self.aStr
+                    self.apple_N += 1
         # 更新增长率
-        self.updata()
+        self.updateRate()
 
-    def getAgentArea(self, num):
+    def getAgentArea(self, agentNum):
         """
         获得当前Agent所在的区域
-        :param num:
+        :param agentNum:
         :return:
         """
-        # #######################################################
-        # 第一块区域(垃圾增长区域)[row坐标(0, int(ROW / 2) - 1)]; [col坐标(0, int(COL / 2) - 1)]
-        # 第二块区域(苹果增长区域)[row坐标(0, int(ROW / 2) - 1)]; [col坐标(int(COL / 2), COL - 1)]
-        # 第三块区域(苹果增长区域)[row坐标(int(ROW / 2), ROW - 1)]; [col坐标(0, int(COL / 2) - 1)]
-        # 第四块区域(垃圾增长区域)[row坐标(int(ROW / 2), ROW - 1)]; [col坐标(int(COL / 2), COL - 1)]
-        # #######################################################
-        Agent_x = self.Agent_address[num][0]
-        Agent_y = self.Agent_address[num][1]
-        if 0 <= Agent_x <= (int(ROW / 2) - 1) and 0 <= Agent_y <= (int(COL / 2) - 1):
+        Agent_x = self.agentsList[agentNum].address[0]
+        if 0 <= Agent_x < self.ROW // 2:
             return 0
-        elif 0 <= Agent_x <= (int(ROW / 2) - 1) and int(COL / 2) <= Agent_y <= (COL - 1):
+        else:
             return 1
-        elif int(ROW / 2) <= Agent_x <= (ROW - 1) and 0 <= Agent_y <= (int(COL / 2) - 1):
-            return 2
-        elif int(ROW / 2) <= Agent_x <= (ROW - 1) and int(COL / 2) <= Agent_y <= (COL - 1):
-            return 3
 
     # 输出函数
     def display(self):
         # 输出地图
-        for i in range(ROW):
+        for i in range(self.ROW):
             print('%-2d' % i, end='')
-            for j in range(COL):
+            for j in range(self.COL):
                 print(self.Map_table[i][j], end=' ')
             print('\r')

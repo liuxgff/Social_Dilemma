@@ -10,11 +10,10 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.python.keras import layers
 from tensorflow.python.keras.optimizers import RMSprop
-import tensorflow.python.keras.backend as K
 
 
 class DeepQNetwork:
-    def __init__(self, n_actions=4, n_features=75, agentName=None, savePath=None):
+    def __init__(self, n_actions, n_features, agentName):
 
         self.params = {
             'n_actions': n_actions,
@@ -25,9 +24,7 @@ class DeepQNetwork:
             'replace_target_iter': 300,
             'memory_size': 500,
             'batch_size': 32,
-            'e_greedy_increment': None,
-            'agentName': agentName,
-            'savePath': savePath
+            'e_greedy_increment': None
         }
 
         class Eval_Model(tf.keras.Model):
@@ -64,8 +61,8 @@ class DeepQNetwork:
         self.epsilon = 0 if self.params['e_greedy_increment'] is not None else self.params['e_greedy']
         self.memory = np.zeros((self.params['memory_size'], self.params['n_features'] * 2 + 2))
 
-        self.eval_model = Eval_Model(self.params['agentName'], self.params['n_actions'])
-        self.target_model = Target_Model(self.params['agentName'], self.params['n_actions'])
+        self.eval_model = Eval_Model(agentName, self.params['n_actions'])
+        self.target_model = Target_Model(agentName, self.params['n_actions'])
 
         self.eval_model.compile(
             optimizer=RMSprop(lr=self.params['learning_rate']),
@@ -92,15 +89,20 @@ class DeepQNetwork:
         if np.random.uniform() < self.epsilon:
             # forward feed the observation and get q value for every actions
             actions_value = self.eval_model.predict(observation)
-            # print(actions_value)
+            print(actions_value)
             action = np.argmax(actions_value)
         else:
             action = np.random.randint(0, self.params['n_actions'])
         return action
 
+    def schedule(self):
+        return self.params['learning_rate'] * self.lrRate
+
     def learn(self, lrRate):
-        K.set_value(self.eval_model.optimizer.lr, self.params['learning_rate'] * lrRate)  # 修改学习率
-        currentLr = K.get_value(self.eval_model.optimizer.lr)
+        self.lrRate = lrRate
+        # 将LearningRateScheduler类实例化
+        tf.keras.callbacks.LearningRateScheduler(self.schedule)
+
         # sample batch memory from all memory
         if self.memory_counter > self.params['memory_size']:
             sample_index = np.random.choice(self.params['memory_size'], size=self.params['batch_size'])
@@ -125,7 +127,7 @@ class DeepQNetwork:
         if self.learn_step_counter % self.params['replace_target_iter'] == 0:
             for eval_layer, target_layer in zip(self.eval_model.layers, self.target_model.layers):
                 target_layer.set_weights(eval_layer.get_weights())
-            # print('\ntarget_params_replaced\n')
+            print('\ntarget_params_replaced\n')
 
         """
         For example in this batch I have 2 samples and 3 actions:
@@ -165,5 +167,4 @@ class DeepQNetwork:
         plt.plot(np.arange(len(self.cost_his)), self.cost_his)
         plt.ylabel('Cost')
         plt.xlabel('training steps')
-        plt.savefig(self.params['savePath'] + 'loss.jpg')
-        plt.close()
+        plt.show()
