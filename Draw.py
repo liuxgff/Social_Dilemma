@@ -50,3 +50,29 @@ def draw_list(plot_list='', y_lable='', x_lable='', figPath='', label_list=None)
         ax.legend(label_list)
     plt.savefig(figPath, dpi=DPI)  # 图像存储, 设置分辨率为400
     plt.close()
+
+
+def draw_heatmap(data_list,  nameList, figpath):
+    """
+    热力图绘制
+    :return:
+    """
+    plt.rc('font', family='Arial')
+    plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
+    plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
+    plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
+
+    x_tick = nameList
+    y_tick = ['G_Area', 'A_Area']
+    ALLdata = {}
+    for i in range(len(data_list)):
+        ALLdata[x_tick[i]] = data_list[i]
+    ALLdata = pd.DataFrame(ALLdata, index=y_tick, columns=x_tick)
+
+    sns.heatmap(ALLdata, cmap='GnBu')
+    # plt.xlabel('Agents Name', fontsize=10, color='k')
+    # plt.ylabel('Area', fontsize=10, color='k')
+    plt.xticks(fontproperties='Arial', size=10)
+    plt.yticks(rotation=0, fontproperties='Arial', size=10)
+    plt.savefig(figpath)
+    plt.close()

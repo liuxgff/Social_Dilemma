@@ -5,13 +5,13 @@
 @Email  ：liuxgemail@163.com
 @Description ：
 =================================================="""
-
+import math
 import random
 import numpy as np
 
 
 class Cleanup:
-    def __init__(self, ROW=12, COL=20, appleRate=0.1, garbageRate=0.15, agentsList=None, InitRandAddress=True):
+    def __init__(self, ROW=12, COL=20, appleRate=0.1, garbageRate=0.15, agentsList=None, InitRandAddress=False):
         self.ROW = ROW  # 地图的宽
         self.COL = COL   # 地图的长
         self.Map_table = None  # 创建地图
@@ -61,7 +61,7 @@ class Cleanup:
         :return:
         """
         for agent in self.agentsList:
-            if self.initRandAddress:  # 如果agent位置是随机
+            if not self.initRandAddress:  # 如果agent位置是随机
                 while True:
                     x = random.randint(0, self.ROW - 1)
                     y = random.randint(0, self.COL - 1)
@@ -115,16 +115,7 @@ class Cleanup:
         '视野大小'
         viewSize = (self.agentsList[agentNum].view * 2 + 1) ** 2
 
-        'Agent的满足度占比'
-        sPercent = int((self.agentsList[agentNum].currentSatisfaction / self.agentsList[agentNum].MaxSatisfaction) * viewSize)
-        for i in range(viewSize):
-            if sPercent:
-                M = np.append(M, 1)
-                sPercent -= 1
-            else:
-                M = np.append(M, 0)
-
-        # 苹果的位置
+        '苹果的位置'
         for i in range(sx, ex + 1):
             for j in range(sy, ey + 1):
                 if 0 <= i < self.ROW and 0 <= j < self.COL:  # 防止出界
@@ -135,7 +126,7 @@ class Cleanup:
                 else:
                     M = np.append(M, 0)
 
-        # 垃圾的位置
+        '垃圾的位置'
         for i in range(sx, ex + 1):
             for j in range(sy, ey + 1):
                 if 0 <= i < self.ROW and 0 <= j < self.COL:
@@ -145,6 +136,24 @@ class Cleanup:
                         M = np.append(M, 0)
                 else:
                     M = np.append(M, 0)
+
+        'Agent的最大满足度'
+        for i in range(viewSize):
+            if self.agentsList[agentNum].MaxSatisfaction == 10:
+                M = np.append(M, 1)
+            else:
+                M = np.append(M, 0)
+
+        'Agent的当前满足度占比'
+        sPercent = int((sum(self.agentsList[agentNum].currentSatisfaction) /
+                        self.agentsList[agentNum].MaxSatisfaction) * viewSize)
+        for i in range(viewSize):
+            if sPercent:
+                M = np.append(M, 1)
+                sPercent -= 1
+            else:
+                M = np.append(M, 0)
+
         return M
 
     # 检测Agent是否出界
@@ -184,12 +193,19 @@ class Cleanup:
             self.agentsList[agentNum].ownAppleNum += 1  # 每轮agent采集苹果的数量
             # 采集苹果获得奖励
             realReward = 10  # 实际奖励
-            self.agentsList[agentNum].currentSatisfaction += realReward
-            Reward = realReward
+            if len(self.agentsList[agentNum].currentSatisfaction) == self.agentsList[agentNum].rewardLen:
+                self.agentsList[agentNum].currentSatisfaction.pop(0)
+            self.agentsList[agentNum].currentSatisfaction.append(realReward)
+            self.agentsList[agentNum].update_learning_rate()
 
-        "如果新位置为空"
-        if self.Map_table[x_, y_] == ' ':
-            Reward = 0
+            if self.agentsList[agentNum].current_learning_rate >= 1:
+                Reward = -realReward
+            else:
+                Reward = realReward
+
+        # "如果新位置为空"
+        # if self.Map_table[x_, y_] == ' ':
+        #     Reward = -5
 
         "如果agent移动到垃圾清理区域"
         if x_ < self.ROW//2:
@@ -224,13 +240,19 @@ class Cleanup:
                             self.Map_table[cx, cy] = ' '
                             self.garbage_N -= 1
                             temp_num_g += 1
+
             # 每轮agent采集垃圾的数量
-            temp_num_g = temp_num_g / ((self.agentsList[agentNum].view + 1) ** 2)
-            self.agentsList[agentNum].ownGarbageNum += temp_num_g
+            self.agentsList[agentNum].ownGarbageNum += temp_num_g / (math.pow(self.agentsList[agentNum].view + 1, 2) - 1)
             # 清理垃圾获得奖励
-            realReward = temp_num_g * 5
-            self.agentsList[agentNum].currentSatisfaction += realReward
-            Reward = realReward
+            realReward = temp_num_g / (math.pow(self.agentsList[agentNum].view + 1, 2) - 1) * 5
+            if len(self.agentsList[agentNum].currentSatisfaction) == self.agentsList[agentNum].rewardLen:
+                self.agentsList[agentNum].currentSatisfaction.pop(0)
+            self.agentsList[agentNum].currentSatisfaction.append(realReward)
+            self.agentsList[agentNum].update_learning_rate()
+            if realReward < np.mean(self.agentsList[agentNum].currentSatisfaction):
+                Reward = -realReward
+            else:
+                Reward = realReward
 
         "移动agent到新位置"
         # 如果新位置是另一个Agent
@@ -244,7 +266,6 @@ class Cleanup:
         self.Map_table[x_, y_] = self.agentsList[agentNum].name  # agent放置新位置
         self.updateRate()  # 更新增长率
 
-        print(self.agentsList[agentNum].name, self.agentsList[agentNum].currentSatisfaction)
         return Reward
 
     # 垃圾再生长

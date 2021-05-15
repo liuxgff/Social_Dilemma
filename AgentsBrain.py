@@ -14,17 +14,17 @@ import tensorflow.python.keras.backend as K
 
 
 class DeepQNetwork:
-    def __init__(self, n_actions=4, n_features=75, agentName=None, savePath=None):
+    def __init__(self, n_actions=4, n_features=100, batch_size=8, agentName=None, savePath=None):
 
         self.params = {
             'n_actions': n_actions,
             'n_features': n_features,
-            'learning_rate': 0.01,
+            'learning_rate': 0.001,
             'reward_decay': 0.9,
             'e_greedy': 0.9,
             'replace_target_iter': 300,
             'memory_size': 500,
-            'batch_size': 32,
+            'batch_size': batch_size,
             'e_greedy_increment': None,
             'agentName': agentName,
             'savePath': savePath
@@ -99,8 +99,8 @@ class DeepQNetwork:
         return action
 
     def learn(self, lrRate):
-        K.set_value(self.eval_model.optimizer.lr, self.params['learning_rate'] * lrRate)  # 修改学习率
-        currentLr = K.get_value(self.eval_model.optimizer.lr)
+        # K.set_value(self.eval_model.optimizer.lr, self.params['learning_rate'] * lrRate)  # 修改学习率
+        # print(self.params['agentName'], lrRate)
         # sample batch memory from all memory
         if self.memory_counter > self.params['memory_size']:
             sample_index = np.random.choice(self.params['memory_size'], size=self.params['batch_size'])
@@ -159,6 +159,8 @@ class DeepQNetwork:
         self.epsilon = self.epsilon + self.params['e_greedy_increment'] if self.epsilon < self.params['e_greedy'] \
             else self.params['e_greedy']
         self.learn_step_counter += 1
+        if self.learn_step_counter == 4000:
+            self.params['e_greedy_increment'] = 0.1
 
     def plot_cost(self):
         import matplotlib.pyplot as plt
@@ -167,3 +169,9 @@ class DeepQNetwork:
         plt.xlabel('training steps')
         plt.savefig(self.params['savePath'] + 'loss.jpg')
         plt.close()
+
+    def saveModel(self):
+        """
+        保存模型
+        :return:
+        """

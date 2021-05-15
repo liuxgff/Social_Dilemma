@@ -5,17 +5,19 @@
 @Email  ：liuxgemail@163.com
 @Description ：
 =================================================="""
+import math
 
 
 class Agent:
-    def __init__(self, name, MaxSatisfaction, initAddress=None):
+    def __init__(self, name, MaxSatisfaction, rewardLen=8, initAddress=None):
         """
         :param name: agent的名字
         :param MaxSatisfaction: agent的最大满足度
         """
         self.name = name  # agent的名称
         self.MaxSatisfaction = MaxSatisfaction  # agent最高满足度
-        self.currentSatisfaction = 0  # agent当前的满足度
+        self.currentSatisfaction = []  # agent当前的满足度
+        self.rewardLen = rewardLen  # 存储奖励的长度
         self.ownAppleNum = 0  # agent持有苹果
         self.ownGarbageNum = 0  # agent持有垃圾
         self.address = [0, 0]  # agent的地址
@@ -29,14 +31,15 @@ class Agent:
         """
 
         'agent的学习率'
-        self.current_learning_rate = max(self.MaxSatisfaction - self.currentSatisfaction, 0) / self.MaxSatisfaction
+        # self.current_learning_rate = math.exp(-sum(self.currentSatisfaction) / (self.MaxSatisfaction / 2))
+        self.current_learning_rate = sum(self.currentSatisfaction) / self.MaxSatisfaction
 
     def intitAgentData(self):
         """
         初始化Agent的信息
         :return:
         """
-        self.currentSatisfaction = 0  # agent当前的满足度
+        self.currentSatisfaction = []  # agent当前的满足度
         self.ownAppleNum = 0  # agent持有苹果
         self.ownGarbageNum = 0  # agent持有垃圾
         self.address = [0, 0]  # agent的地址
@@ -47,4 +50,5 @@ class Agent:
         更新该agent的学习率
         :return:
         """
-        self.current_learning_rate = max(self.MaxSatisfaction - self.currentSatisfaction, 0) / self.MaxSatisfaction
+        # self.current_learning_rate = math.exp(-sum(self.currentSatisfaction) / (self.MaxSatisfaction / 5))
+        self.current_learning_rate = sum(self.currentSatisfaction) / self.MaxSatisfaction
