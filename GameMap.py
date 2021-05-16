@@ -68,6 +68,7 @@ class Cleanup:
                     if self.Map_table[x, y] == ' ':  # 如果该位置为空可以安置agent
                         break
                 agent.address = [x, y]
+                self.Map_table[x, y] = agent.name
             else:
                 if agent.selectAddress == 0:  # selectAddress == 0表示初始位置在垃圾区域
                     while True:
@@ -76,6 +77,7 @@ class Cleanup:
                         if self.Map_table[x, y] == ' ':  # 如果该位置为空可以安置agent
                             break
                     agent.address = [x, y]
+                    self.Map_table[x, y] = agent.name
                 elif agent.selectAddress == 1:  # selectAddress == 1表示初始位置在苹果区域
                     while True:
                         x = random.randint(self.ROW // 2, self.ROW - 1)
@@ -83,7 +85,7 @@ class Cleanup:
                         if self.Map_table[x, y] == ' ':  # 如果该位置为空可以安置agent
                             break
                     agent.address = [x, y]
-            self.Map_table[x, y] = agent.name
+                    self.Map_table[x, y] = agent.name
 
     # 地图初始化
     def newMap(self):
