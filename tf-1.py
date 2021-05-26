@@ -17,7 +17,7 @@ class DeepQNetwork:
     def __init__(
             self,
             n_actions=4,  # Agent的上下左右动作
-            n_features=75,  # 训练网络的输入大小，默认100
+            n_features=100,  # 训练网络的输入大小，默认100
             learning_rate=0.001,  # 学习率
             reward_decay=0.9,  # 奖励衰减值
             e_greedy=0.9,  # 探索的概率
@@ -175,6 +175,9 @@ class DeepQNetwork:
         self.epsilon = self.epsilon + self.epsilon_increment if self.epsilon < self.epsilon_max else self.epsilon_max
         self.learn_step_counter += 1
 
+        if self.learn_step_counter == 4000:
+            self.epsilon_increment = 0.1
+
     # 保存训练模型
     def save_sess(self):
         self.saver.save(self.sess, self.savePath + '/' + 'MAS')
@@ -185,5 +188,5 @@ class DeepQNetwork:
         plt.title(self.agentName)
         plt.ylabel('Cost')
         plt.xlabel('training steps')
-        # plt.show()
-        plt.imsave(self.savePath + '/loss.jpg')
+        plt.savefig(self.savePath + 'loss.jpg')
+        plt.close()

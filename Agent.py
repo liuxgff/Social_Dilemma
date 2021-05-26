@@ -32,7 +32,7 @@ class Agent:
 
         'agent的学习率'
         # self.current_learning_rate = math.exp(-sum(self.currentSatisfaction) / (self.MaxSatisfaction / 2))
-        self.current_learning_rate = sum(self.currentSatisfaction) / self.MaxSatisfaction
+        self.current_learning_rate = max((self.MaxSatisfaction - sum(self.currentSatisfaction)), 0) / self.MaxSatisfaction
 
     def intitAgentData(self):
         """
@@ -51,4 +51,4 @@ class Agent:
         :return:
         """
         # self.current_learning_rate = math.exp(-sum(self.currentSatisfaction) / (self.MaxSatisfaction / 5))
-        self.current_learning_rate = sum(self.currentSatisfaction) / self.MaxSatisfaction
+        self.current_learning_rate = max((self.MaxSatisfaction - sum(self.currentSatisfaction)), 0) / self.MaxSatisfaction

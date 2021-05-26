@@ -200,7 +200,7 @@ class Cleanup:
             self.agentsList[agentNum].currentSatisfaction.append(realReward)
             self.agentsList[agentNum].update_learning_rate()
 
-            if self.agentsList[agentNum].current_learning_rate >= 1:
+            if self.agentsList[agentNum].current_learning_rate == 0:
                 Reward = -realReward
             else:
                 Reward = realReward
@@ -301,6 +301,14 @@ class Cleanup:
             return 0
         else:
             return 1
+
+    def getAddressIndex(self, agentNum):
+        """
+        获得Agent当前的坐标在地图中的index
+        以(row // 2 - 1, 0)作为原点
+        :return:
+        """
+        return (self.ROW // 2 * self.COL - 1) - (self.agentsList[agentNum].address[0] * self.COL + self.agentsList[agentNum].address[1] + 1)
 
     # 输出函数
     def display(self):
