@@ -81,10 +81,16 @@ def run(gameRound, Steps):
                 else:
                     nreward = cle.move(agentIndex, action)  # 执行动作，并获取下一个状态
                     observation_ = cle.getAgent(agentIndex)  # 获得agent执行动作后的状态
-                agentsBrainList[agentIndex].store_transition(observation, action, nreward, observation_)  # 存储记忆
-                eachAgent.update_learning_rate()  # 更新agent学习率
+                agentsBrainList[agentIndex].store_transition(observation,
+                                                             action,
+                                                             nreward,
+                                                             observation_,
+                                                             eachAgent.current_learning_rate)  # 存储记忆
                 "进行学习"
-                agentsBrainList[agentIndex].learn(agentsList[agentIndex].current_learning_rate)
+                eachAgent.update_learning_rate()  # 更新agent学习率
+                agentsBrainList[agentIndex].learn()
+
+                "存储agent当前的位置"
                 AgentArea[agentIndex].append(cle.getAddressIndex(agentIndex))
 
             cle.updateApple()  # 苹果增长
@@ -123,10 +129,9 @@ if __name__ == "__main__":
     agentsList = []  # 玩家列表
     agentsBrainList = []  # agent训练网络
     MaxSatisfaction = [10, 10, 10, 80, 80, 80]  # 玩家满足度
-    batch_size = 5  # 训练的batch大小
 
     '模型信息'
-    number = 4  # 模型编号
+    number = 9  # 模型编号
     Model_number = 'Model_' + str(number)
     createFolder(Model_number)
     agentInitArea = [0, 0, 0, 1, 1, 1]
@@ -134,16 +139,17 @@ if __name__ == "__main__":
     'agent实例化'
     for i in range(agentsNum):
         Name = chr(i + ord('A'))
-        # agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=1, initAddress=agentInitArea[i]))
-        agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=1))
+        agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=5, initAddress=agentInitArea[i]))
+        # agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=5))
         agentsBrainList.append(
             DeepQNetwork(
-                         batch_size=batch_size,
+                         batch_size=1,
                          agentName=Name,
+                         memory_size=500,
                          savePath=Model_number + '/' + Name))
 
     '地图信息'
-    # cle = Cleanup(agentsList=agentsList, InitRandAddress=agentInitArea)  # 游戏地图实例
-    cle = Cleanup(agentsList=agentsList)  # 游戏地图实例
+    cle = Cleanup(agentsList=agentsList, InitRandAddress=agentInitArea)  # 游戏地图实例
+    # cle = Cleanup(agentsList=agentsList)  # 游戏地图实例
 
-    run(800, 100)  # 运行游戏
+    run(300, 100)  # 运行游戏

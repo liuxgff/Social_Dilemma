@@ -200,10 +200,7 @@ class Cleanup:
             self.agentsList[agentNum].currentSatisfaction.append(realReward)
             self.agentsList[agentNum].update_learning_rate()
 
-            if self.agentsList[agentNum].current_learning_rate == 0:
-                Reward = -realReward
-            else:
-                Reward = realReward
+            Reward = realReward * self.agentsList[agentNum].current_learning_rate
 
         # "如果新位置为空"
         # if self.Map_table[x_, y_] == ' ':
@@ -251,10 +248,7 @@ class Cleanup:
                 self.agentsList[agentNum].currentSatisfaction.pop(0)
             self.agentsList[agentNum].currentSatisfaction.append(realReward)
             self.agentsList[agentNum].update_learning_rate()
-            if realReward < np.mean(self.agentsList[agentNum].currentSatisfaction):
-                Reward = -realReward
-            else:
-                Reward = realReward
+            Reward = realReward * self.agentsList[agentNum].current_learning_rate
 
         "移动agent到新位置"
         # 如果新位置是另一个Agent
