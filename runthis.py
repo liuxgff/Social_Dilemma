@@ -131,7 +131,7 @@ if __name__ == "__main__":
     MaxSatisfaction = [10, 10, 10, 80, 80, 80]  # 玩家满足度
 
     '模型信息'
-    number = 9  # 模型编号
+    number = 1  # 模型编号
     Model_number = 'Model_' + str(number)
     createFolder(Model_number)
     agentInitArea = [0, 0, 0, 1, 1, 1]
@@ -149,7 +149,7 @@ if __name__ == "__main__":
                          savePath=Model_number + '/' + Name))
 
     '地图信息'
-    cle = Cleanup(agentsList=agentsList, InitRandAddress=agentInitArea)  # 游戏地图实例
+    cle = Cleanup(agentsList=agentsList, InitRandAddress=True)  # 游戏地图实例
     # cle = Cleanup(agentsList=agentsList)  # 游戏地图实例
 
     run(300, 100)  # 运行游戏

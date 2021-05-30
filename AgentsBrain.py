@@ -11,6 +11,12 @@ import numpy as np
 from tensorflow.python.keras import layers
 from tensorflow.python.keras.optimizers import RMSprop
 import tensorflow.python.keras.backend as K
+import os
+
+# os.environ["CUDA_VISIBLE_DEVICES"] = "1"  # 指定GPU的第二种方法
+tf.config.experimental_run_functions_eagerly(True)
+tf.random.set_seed(0)
+np.random.seed(0)
 
 
 class DeepQNetwork:
@@ -54,9 +60,6 @@ class DeepQNetwork:
                 logits = self.logits(layer1)
                 return logits
 
-        # 学习率衰减值
-        self.lrRate = 1
-
         # total learning step
         self.learn_step_counter = 0
 
@@ -82,6 +85,8 @@ class DeepQNetwork:
         # replace the old memory with new memory
         index = self.memory_counter % self.params['memory_size']
         self.memory[index, :] = transition
+        if r < 0:
+            lr = 1
         self.theLR[index, :] = lr
         self.memory_counter += 1
 
@@ -108,6 +113,7 @@ class DeepQNetwork:
             sample_index = np.random.choice(self.params['memory_size'], size=sample_batch)
         else:
             sample_index = np.random.choice(self.memory_counter, size=sample_batch)
+
         for each_sample_index in sample_index:
             K.set_value(self.eval_model.optimizer.lr,
                         self.params['learning_rate'] * self.theLR[each_sample_index][0])  # 修改学习率
@@ -164,7 +170,7 @@ class DeepQNetwork:
             self.epsilon = self.epsilon + self.params['e_greedy_increment'] if self.epsilon < self.params['e_greedy'] \
                 else self.params['e_greedy']
             self.learn_step_counter += 1
-            if self.learn_step_counter == 4000:
+            if self.learn_step_counter == 120000:
                 self.params['e_greedy_increment'] = 0.1
 
     def plot_cost(self):
