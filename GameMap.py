@@ -199,8 +199,8 @@ class Cleanup:
                 self.agentsList[agentNum].currentSatisfaction.pop(0)
             self.agentsList[agentNum].currentSatisfaction.append(realReward)
             self.agentsList[agentNum].update_learning_rate()
-            if realReward < np.mean(self.agentsList[agentNum].currentSatisfaction) or self.agentsList[agentNum].current_learning_rate == 0:
-                realReward *= -1
+            # if self.agentsList[agentNum].current_learning_rate == 0:
+            #     realReward *= -1
             Reward = realReward
 
         # "如果新位置为空"
@@ -249,8 +249,6 @@ class Cleanup:
                 self.agentsList[agentNum].currentSatisfaction.pop(0)
             self.agentsList[agentNum].currentSatisfaction.append(realReward)
             self.agentsList[agentNum].update_learning_rate()
-            if realReward < np.mean(self.agentsList[agentNum].currentSatisfaction):
-                realReward *= -1
             Reward = realReward
 
         "移动agent到新位置"
@@ -302,10 +300,10 @@ class Cleanup:
     def getAddressIndex(self, agentNum):
         """
         获得Agent当前的坐标在地图中的index
-        以(row // 2 - 1, 0)作为原点
+        以(row // 2 - 1, col - 1)作为原点
         :return:
         """
-        return (self.ROW // 2 * self.COL - 1) - (self.agentsList[agentNum].address[0] * self.COL + self.agentsList[agentNum].address[1] + 1)
+        return (self.ROW // 2 * self.COL) - (self.agentsList[agentNum].address[0] * self.COL + self.agentsList[agentNum].address[1] + 1)
 
     # 输出函数
     def display(self):

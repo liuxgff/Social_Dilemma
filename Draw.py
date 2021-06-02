@@ -10,9 +10,9 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 
-LABELSIZE = 8  # 图像中所有label的大小
+LABELSIZE = 12  # 图像中所有label的大小
 LEFT = 0.13  # 画布设置，距离左侧大小
-BOTTOM = 0.13  # 距离底部大小
+BOTTOM = 0.14  # 距离底部大小
 RIGHT = 0.98  # 距离右侧大小
 TOP = 0.98  # 距离上端大小
 
@@ -27,12 +27,14 @@ DPI = 400
 def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=None):
     # plt.rc对全图字体进行统一修改
     plt.figure(1)  # 图像编号
+
     plt.rc('font', family='Calibri')  # 图像字体
     plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
     plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
     plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
     # 建立画布
     fig, ax = plt.subplots()
+    plt.grid()  # 生成网格
     fig.subplots_adjust(left=LEFT, bottom=BOTTOM, right=RIGHT, top=TOP)  # 画布范围设置: 离左侧.14,距离下方.18,右侧.97,上方.97
     # ax.spines['right'].set_visible(False)  # 取消有边框
     # ax.spines['top'].set_visible(False)  # 取消左边框
@@ -43,18 +45,18 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
     linestylelist = ['-', '--', ':', '-.']
     colors1 = ['darkorange', 'royalblue']
     FillColor1 = ['wheat', 'cornflowerblue']
-    colors2 = ['orange', 'brown', 'seagreen', 'lightseagreen', 'steelblue', 'peru']
-    FillColor2 = ['tan', 'lightcoral', 'mediumseagreen', 'turquoise', 'lightskyblue', 'sandybrown']
+    colors2 = ['darkorange', 'r',  'b', 'darkgreen', 'darkslategray', 'purple']
+    FillColor2 = ['tan', 'lightcoral', 'royalblue', 'forestgreen', 'darkcyan', 'violet']
     for i in range(len(plot_list)):
         if len(plot_list) <= 2:
             updata = [j + 10 for j in plot_list[i]]
             downdata = [j - 10 for j in plot_list[i]]
-            plt.plot(np.arange(len(plot_list[i])), plot_list[i], color=colors1[i], linewidth=1.2)
+            plt.plot(np.arange(len(plot_list[i])), plot_list[i], color=colors1[i], linewidth=1.1)
             plt.fill_between(np.arange(len(plot_list[i])), downdata, updata, facecolor=FillColor1[i], alpha=0.3)
         else:
-            updata = [j + 20 for j in plot_list[i]]
-            downdata = [j - 20 for j in plot_list[i]]
-            plt.plot(np.arange(len(plot_list[i])), plot_list[i], color=colors2[i], linewidth=1.2)
+            updata = [j + 10 for j in plot_list[i]]
+            downdata = [j - 10 for j in plot_list[i]]
+            plt.plot(np.arange(len(plot_list[i])), plot_list[i], color=colors2[i], linewidth=1.1)
             plt.fill_between(np.arange(len(plot_list[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
     ax.set_ylabel(y_lable)  # x轴标签
     ax.set_xlabel(x_lable)  # y轴标签

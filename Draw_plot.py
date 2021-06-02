@@ -20,17 +20,20 @@ HEIGHT = WIDTH / 1.5
 # 图像像素
 DPI = 400
 
+path = 'Result/'
 
-Model_1 = list(pd.read_csv('Model_1.csv', index_col=False)['result'])
+Model_1 = list(pd.read_csv(path + 'Model_1.csv', index_col=False)['result'])
 
-Model_2 = list(pd.read_csv('Model_2.csv', index_col=False)['result'])
+Model_2 = list(pd.read_csv(path + 'Model_2.csv', index_col=False)['result'])
 
-Model_3 = list(pd.read_csv('Model_3.csv', index_col=False)['result'])
+Model_3 = list(pd.read_csv(path + 'Model_3.csv', index_col=False)['result'])
 
-compareList = [Model_1, Model_2, Model_3]
-y_label = 'The number of apples'  # y坐标轴名称
-x_label = 'Steps'  # x轴名称
-label_list = ['Model_1', 'Model_2', 'Model_3']
+Model_4 = list(pd.read_csv(path + 'NoLrChange.csv', index_col=False)['result'])
+
+compareList = [Model_1, Model_2, Model_3, Model_4]
+y_label = 'Apple collection'  # y坐标轴名称
+x_label = 'Episode'  # x轴名称
+label_list = ['All_Low', 'All_High', 'Heterogeneity', 'FixedLr']
 figPath = 'Apples.png'  # 存储图像的地址
 
 
