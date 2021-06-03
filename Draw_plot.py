@@ -28,14 +28,25 @@ Model_2 = list(pd.read_csv(path + 'Model_2.csv', index_col=False)['result'])
 
 Model_3 = list(pd.read_csv(path + 'Model_3.csv', index_col=False)['result'])
 
-Model_4 = list(pd.read_csv(path + 'NoLrChange.csv', index_col=False)['result'])
+Model_4 = list(pd.read_csv(path + 'Model_FixedLR.csv', index_col=False)['result'])
 
-compareList = [Model_1, Model_2, Model_3, Model_4]
+Model_5 = list(pd.read_csv(path + 'Model_Random.csv', index_col=False)['result'])
+
+"同质性与异质性比较"
+compareList = [Model_1, Model_2, Model_3, Model_5]
 y_label = 'Apple collection'  # y坐标轴名称
 x_label = 'Episode'  # x轴名称
-label_list = ['All_Low', 'All_High', 'Heterogeneity', 'FixedLr']
+label_list = ['Homogeneous_Low', 'Homogeneous_High', 'Heterogeneous', 'RandomAction']
 figPath = 'Apples.png'  # 存储图像的地址
-
 
 draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list)
 
+
+"改变学习率与固定学习率"
+compareList = [Model_3, Model_5, Model_4]
+y_label = 'Apple collection'  # y坐标轴名称
+x_label = 'Episode'  # x轴名称
+label_list = ['Heterogeneous', 'RandomAction', 'FixedLR']
+figPath = 'Apples_lr.png'  # 存储图像的地址
+
+draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=2)
