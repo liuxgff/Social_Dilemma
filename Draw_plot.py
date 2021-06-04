@@ -39,14 +39,14 @@ x_label = 'Episode'  # x轴名称
 label_list = ['Homogeneous_Low', 'Homogeneous_High', 'Heterogeneous', 'RandomAction']
 figPath = 'Apples.png'  # 存储图像的地址
 
-draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list)
+draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=[0, 1, 2, 4])
 
 
 "改变学习率与固定学习率"
-compareList = [Model_3, Model_5, Model_4]
+compareList = [Model_3, Model_4, Model_5]
 y_label = 'Apple collection'  # y坐标轴名称
 x_label = 'Episode'  # x轴名称
-label_list = ['Heterogeneous', 'RandomAction', 'FixedLR']
+label_list = ['Heterogeneous', 'FixedLR', 'RandomAction']
 figPath = 'Apples_lr.png'  # 存储图像的地址
 
-draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=2)
+draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=[2, 3, 4])
