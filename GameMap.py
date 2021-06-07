@@ -192,9 +192,9 @@ class Cleanup:
         if self.Map_table[x_, y_] == self.aStr:
             self.endAppleNum += 1  # 获取苹果数量加1
             self.apple_N -= 1  # 苹果数量减一
-            self.agentsList[agentNum].ownAppleNum += 1  # 每轮agent采集苹果的数量
             # 采集苹果获得奖励
             realReward = 10  # 实际奖励
+            self.agentsList[agentNum].ownAppleNum += realReward  # 每轮agent采集苹果的数量
             if len(self.agentsList[agentNum].currentSatisfaction) == self.agentsList[agentNum].rewardLen:
                 self.agentsList[agentNum].currentSatisfaction.pop(0)
             self.agentsList[agentNum].currentSatisfaction.append(realReward)
@@ -240,11 +240,11 @@ class Cleanup:
                             self.Map_table[cx, cy] = ' '
                             self.garbage_N -= 1
                             temp_num_g += 1
-
-            # 每轮agent采集垃圾的数量
-            self.agentsList[agentNum].ownGarbageNum += temp_num_g / (math.pow(self.agentsList[agentNum].view + 1, 2) - 1)
             # 清理垃圾获得奖励
             realReward = temp_num_g / (math.pow(self.agentsList[agentNum].view + 1, 2) - 1) * 5
+            # 每轮agent采集垃圾的奖励
+            self.agentsList[agentNum].ownGarbageNum += realReward
+
             if len(self.agentsList[agentNum].currentSatisfaction) == self.agentsList[agentNum].rewardLen:
                 self.agentsList[agentNum].currentSatisfaction.pop(0)
             self.agentsList[agentNum].currentSatisfaction.append(realReward)

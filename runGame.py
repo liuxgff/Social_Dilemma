@@ -64,6 +64,8 @@ def run(gameRound, Steps):
     step = 0
     endAppleList = []  # 每轮采集苹果的数量
     AppleSum = 0  # 统计10轮内的采集苹果的数量
+    AgentsReward = [[0, 0] for _ in range(len(agentsList))]  # Agent的得分情况
+
     # 进行N轮游戏
     for Game_round in range(gameRound):
         apple_garbage = [[], []]  # 苹果和垃圾的变化
@@ -98,64 +100,6 @@ def run(gameRound, Steps):
                 "进行学习"
                 agentsBrainList[agentIndex].learn()
 
-            cle.updateApple()  # 苹果增长
-            if R_step % 2 == 0:  # 每5步增长一次垃圾
-                cle.updateGarbage()
-            step += 1
-            # cle.display()  # print地图内容
-            # input()
-
-        print("第%d轮：" % Game_round, "收获苹果个数 = %d" % cle.endAppleNum)
-        AppleSum += cle.endAppleNum
-        if (Game_round+1) % AVG == 0:  # 记录10轮内的平均采集数量
-            endAppleList.append(AppleSum // AVG)  # 记录本轮采集的苹果总数
-            AppleSum = 0
-        for eachAgent in agentsList:  # 初始化Agent
-            eachAgent.intitAgentData()
-        cle.newMap()  # 初始化地图
-
-    "存储模型"
-    for _, eachBrain in enumerate(agentsBrainList):
-        eachBrain.plot_cost()
-
-    "存储苹果数量"
-    pd.DataFrame(endAppleList, columns=['result']).to_csv(Model_number + '/ApplesCollection.csv', index=False)
-
-    "绘图"
-    draw_endApple_Num([endAppleList])  # 最后采集苹果总数
-    draw_apple_garbage(apple_garbage)  # 一轮中苹果和垃圾数量的变化
-    nameList = ['Agent ' + str(p+1) for p in range(len(agentsList))]
-    draw_Agent_area(AgentArea, nameList)
-
-
-def run_NoLearning(gameRound, Steps):
-    """
-    :param Steps:
-    :param gameRound:
-    :return:
-    """
-    step = 0
-    endAppleList = []  # 每轮采集苹果的数量
-    AppleSum = 0  # 统计10轮内的采集苹果的数量
-    # 进行N轮游戏
-    for Game_round in range(gameRound):
-        apple_garbage = [[], []]  # 苹果和垃圾的变化
-        AgentArea = [[] for _ in range(len(agentsList))]  # agent每轮的移动轨迹
-
-        '测试开始'
-        for R_step in range(Steps):
-            cle.updateRate()  # 更新数据
-            apple_garbage[0].append(cle.apple_N)  # 苹果数量
-            apple_garbage[1].append(cle.garbage_N)  # 垃圾数量
-            "Agents动作执行"
-            for agentIndex, eachAgent in enumerate(agentsList):
-                "存储agent当前的位置"
-                AgentArea[agentIndex].append(cle.getAddressIndex(agentIndex))
-
-                "随机选择动作"
-                action = np.random.randint(0, 4)
-                if not cle.is_state(agentIndex, action):  # 如果下一个动作出界
-                    cle.move(agentIndex, action)  # 执行动作，并获取下一个状态
 
             cle.updateApple()  # 苹果增长
             if R_step % 2 == 0:  # 每5步增长一次垃圾
@@ -169,7 +113,9 @@ def run_NoLearning(gameRound, Steps):
         if (Game_round+1) % AVG == 0:  # 记录10轮内的平均采集数量
             endAppleList.append(AppleSum // AVG)  # 记录本轮采集的苹果总数
             AppleSum = 0
-        for eachAgent in agentsList:  # 初始化Agent
+        for agentIndex, eachAgent in enumerate(agentsList):  # 初始化Agent
+            AgentsReward[agentIndex][0] += eachAgent.ownAppleNum
+            AgentsReward[agentIndex][1] += eachAgent.ownGarbageNum
             eachAgent.intitAgentData()
         cle.newMap()  # 初始化地图
 
