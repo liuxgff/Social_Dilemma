@@ -48,11 +48,11 @@ def draw_endApple_Num(appleList):
     draw_list(appleList, y_label, x_label, figPath)  # 绘图
 
 
-def draw_Agent_area(AgentArea, nameList):
+def draw_Agent_area(AgentArea, nameList, colorIndex=None):
     y_label = 'Position'  # y坐标轴名称
     x_label = 'Steps'  # x轴名称
     figPath = Model_number + '/Agent_Area.png'  # 存储图像的地址
-    draw_list(plot_list=AgentArea, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=nameList)
+    draw_list(plot_list=AgentArea, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=nameList, colorIndex=colorIndex)
 
 
 def run(gameRound, Steps):
@@ -100,7 +100,6 @@ def run(gameRound, Steps):
                 "进行学习"
                 agentsBrainList[agentIndex].learn()
 
-
             cle.updateApple()  # 苹果增长
             if R_step % 2 == 0:  # 每5步增长一次垃圾
                 cle.updateGarbage()
@@ -126,11 +125,14 @@ def run(gameRound, Steps):
     "存储苹果数量"
     pd.DataFrame(endAppleList, columns=['result']).to_csv(Model_number + '/ApplesCollection.csv', index=False)
 
+    "存储每个Agent的得分"
+    pd.DataFrame(AgentsReward, columns=['Apples', 'Garbage']).to_csv(Model_number + '/endReward.csv', index=False)
+
     "绘图"
     draw_endApple_Num([endAppleList])  # 最后采集苹果总数
     draw_apple_garbage(apple_garbage)  # 一轮中苹果和垃圾数量的变化
     nameList = ['Agent ' + str(p+1) for p in range(len(agentsList))]
-    draw_Agent_area(AgentArea, nameList)
+    draw_Agent_area(AgentArea, nameList, colorIndex=[0, 1, 2, 3, 4, 5])
 
 
 if __name__ == "__main__":
@@ -174,18 +176,18 @@ if __name__ == "__main__":
         MaxSatisfaction = MaxSatisfaction_list[game_type]
 
         '模型信息'
-        Model_number = 'Result/Model_' + str(game_type + 4)
+        Model_number = 'Result/Model_' + str(game_type + 1)
         createFolder(Model_number)
         agentInitArea = [0, 0, 0, 1, 1, 1]
 
         'agent实例化'
         for i in range(agentsNum):
             Name = chr(i + ord('A'))
-            agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=8, initAddress=agentInitArea[i]))
+            agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=5, initAddress=agentInitArea[i]))
             # agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=5))
             agentsBrainList.append(
                 DeepQNetwork(
-                             batch_size=8,
+                             batch_size=1,
                              agentName=Name,
                              memory_size=500,
                              savePath=Model_number + '/' + Name))
