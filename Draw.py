@@ -66,7 +66,7 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
     plt.close()
 
 
-def draw_heatmap(data_list,  nameList, figpath):
+def draw_heatmap(data_list, figpath):
     """
     绘制agent停留区域热力图
     :return:
@@ -76,14 +76,21 @@ def draw_heatmap(data_list,  nameList, figpath):
     plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
     plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
 
-    x_tick = nameList
-    y_tick = ['G_Area', 'A_Area']
-    ALLdata = {}
-    for i in range(len(data_list)):
-        ALLdata[x_tick[i]] = data_list[i]
-    ALLdata = pd.DataFrame(ALLdata, index=y_tick, columns=x_tick)
-    sns.heatmap(ALLdata, cmap='GnBu')
-    plt.xticks(fontproperties='Arial', size=10)
-    plt.yticks(rotation=0, fontproperties='Arial', size=10)
+    plt.subplot(1, 2, 1)
+    apple_data = list(data_list['Apples'])
+    apple_data = pd.DataFrame(apple_data, index=['Agent1', 'Agent2', 'Agent3', 'Agent4', 'Agent5', 'Agent6'],
+                              columns=['Apples'])
+    sns.heatmap(apple_data, cmap='YlOrRd', square=True)
+    plt.xticks(fontproperties='Arial', size=LABELSIZE)
+    plt.yticks(rotation=0, fontproperties='Arial', size=LABELSIZE)
+    plt.savefig(figpath, dpi=DPI)
+
+    plt.subplot(1, 2, 2)
+    garbage_data = list(data_list['Garbage'])
+    garbage_data = pd.DataFrame(garbage_data, index=['Agent1', 'Agent2', 'Agent3', 'Agent4', 'Agent5', 'Agent6'],
+                                columns=['Garbage'])
+    sns.heatmap(garbage_data, cmap='YlOrRd', square=True)
+    plt.xticks(fontproperties='Arial', size=LABELSIZE)
+    plt.yticks(rotation=0, fontproperties='Arial', size=LABELSIZE)
     plt.savefig(figpath, dpi=DPI)
     plt.close()

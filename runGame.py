@@ -81,24 +81,28 @@ def run(gameRound, Steps):
                 "存储agent当前的位置"
                 AgentArea[agentIndex].append(cle.getAddressIndex(agentIndex))
 
-                '学习过程'
-                observation = cle.getAgent(agentIndex)  # 获得当前状态
-                action = agentsBrainList[agentIndex].choose_action(observation)  # 由网络选择一个动作
-
-                # 判断该动作是否出界
-                if cle.is_state(agentIndex, action):  # 如果下一个动作出界
-                    nreward = -5
-                    observation_ = observation
-                else:
-                    nreward = cle.move(agentIndex, action)  # 执行动作，并获取下一个状态
-                    observation_ = cle.getAgent(agentIndex)  # 获得agent执行动作后的状态
-                agentsBrainList[agentIndex].store_transition(observation,
-                                                             action,
-                                                             nreward,
-                                                             observation_,
-                                                             eachAgent.current_learning_rate)  # 存储记忆
-                "进行学习"
-                agentsBrainList[agentIndex].learn()
+                # '学习过程'
+                # observation = cle.getAgent(agentIndex)  # 获得当前状态
+                # action = agentsBrainList[agentIndex].choose_action(observation)  # 由网络选择一个动作
+                #
+                # # 判断该动作是否出界
+                # if cle.is_state(agentIndex, action):  # 如果下一个动作出界
+                #     nreward = -5
+                #     observation_ = observation
+                # else:
+                #     nreward = cle.move(agentIndex, action)  # 执行动作，并获取下一个状态
+                #     observation_ = cle.getAgent(agentIndex)  # 获得agent执行动作后的状态
+                # agentsBrainList[agentIndex].store_transition(observation,
+                #                                              action,
+                #                                              nreward,
+                #                                              observation_,
+                #                                              eachAgent.current_learning_rate)  # 存储记忆
+                # "进行学习"
+                # agentsBrainList[agentIndex].learn()
+                "随机选择动作"
+                action = np.random.randint(0, 4)
+                if not cle.is_state(agentIndex, action):  # 如果下一个动作出界
+                    cle.move(agentIndex, action)  # 执行动作，并获取下一个状态
 
             cle.updateApple()  # 苹果增长
             if R_step % 2 == 0:  # 每5步增长一次垃圾
@@ -168,7 +172,7 @@ if __name__ == "__main__":
     # run(300, 100)  # 运行游戏
 
     # MaxSatisfaction_list = [[10, 10, 10, 10, 10, 10], [80, 80, 80, 80, 80, 80], [10, 10, 10, 80, 80, 80]]  # 玩家满足度
-    MaxSatisfaction_list = [[10, 10, 10, 100, 100, 100]]  # 玩家满足度
+    MaxSatisfaction_list = [[10, 10, 10, 80, 80, 80]]  # 玩家满足度
     for game_type in range(len(MaxSatisfaction_list)):
         'agent信息'
         agentsNum = 6  # 玩家个数
@@ -177,7 +181,7 @@ if __name__ == "__main__":
         MaxSatisfaction = MaxSatisfaction_list[game_type]
 
         '模型信息'
-        Model_number = 'Result/Model_' + str('maxS_100_reL_5')
+        Model_number = 'Result/Model_' + str('Random')
         createFolder(Model_number)
         agentInitArea = [0, 0, 0, 1, 1, 1]
 
