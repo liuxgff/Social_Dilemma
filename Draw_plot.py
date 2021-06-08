@@ -22,15 +22,17 @@ DPI = 400
 
 path = 'Result/'
 
-Model_1 = list(pd.read_csv(path + 'Model_1.csv', index_col=False)['result'])
+Model_1 = list(pd.read_csv(path + 'Model_1/ApplesCollection.csv', index_col=False)['result'])
 
-Model_2 = list(pd.read_csv(path + 'Model_2.csv', index_col=False)['result'])
+Model_2 = list(pd.read_csv(path + 'Model_2/ApplesCollection.csv', index_col=False)['result'])
 
-Model_3 = list(pd.read_csv(path + 'Model_3.csv', index_col=False)['result'])
+Model_3 = list(pd.read_csv(path + 'Model_3/ApplesCollection.csv', index_col=False)['result'])
 
-Model_4 = list(pd.read_csv(path + 'Model_FixedLR.csv', index_col=False)['result'])
+Model_4 = list(pd.read_csv(path + 'Model_FixedLR/ApplesCollection.csv', index_col=False)['result'])
 
-Model_5 = list(pd.read_csv(path + 'Model_Random.csv', index_col=False)['result'])
+Model_5 = list(pd.read_csv(path + 'Model_Random/ApplesCollection.csv', index_col=False)['result'])
+
+Model_6 = list(pd.read_csv(path + 'Model_rewardLen_8/ApplesCollection.csv', index_col=False)['result'])
 
 "同质性与异质性比较"
 compareList = [Model_1, Model_2, Model_3, Model_5]

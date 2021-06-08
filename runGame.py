@@ -167,8 +167,9 @@ if __name__ == "__main__":
     #
     # run(300, 100)  # 运行游戏
 
-    MaxSatisfaction_list = [[10, 10, 10, 10, 10, 10], [80, 80, 80, 80, 80, 80], [10, 10, 10, 80, 80, 80]]  # 玩家满足度
-    for game_type in range(0, 3):
+    # MaxSatisfaction_list = [[10, 10, 10, 10, 10, 10], [80, 80, 80, 80, 80, 80], [10, 10, 10, 80, 80, 80]]  # 玩家满足度
+    MaxSatisfaction_list = [[10, 10, 10, 100, 100, 100]]  # 玩家满足度
+    for game_type in range(len(MaxSatisfaction_list)):
         'agent信息'
         agentsNum = 6  # 玩家个数
         agentsList = []  # 玩家列表
@@ -176,7 +177,7 @@ if __name__ == "__main__":
         MaxSatisfaction = MaxSatisfaction_list[game_type]
 
         '模型信息'
-        Model_number = 'Result/Model_' + str(game_type + 1)
+        Model_number = 'Result/Model_' + str('maxS_100_reL_5')
         createFolder(Model_number)
         agentInitArea = [0, 0, 0, 1, 1, 1]
 
