@@ -28,26 +28,26 @@ Model_2 = list(pd.read_csv(path + 'Model_2/ApplesCollection.csv', index_col=Fals
 
 Model_3 = list(pd.read_csv(path + 'Model_3/ApplesCollection.csv', index_col=False)['result'])
 
-Model_4 = list(pd.read_csv(path + 'Model_FixedLR/ApplesCollection.csv', index_col=False)['result'])
+Model_FixedLR = list(pd.read_csv(path + 'Model_FixedLR/ApplesCollection.csv', index_col=False)['result'])
 
-Model_5 = list(pd.read_csv(path + 'Model_Random/ApplesCollection.csv', index_col=False)['result'])
+Model_Random = list(pd.read_csv(path + 'Model_Random/ApplesCollection.csv', index_col=False)['result'])
 
 Model_6 = list(pd.read_csv(path + 'Model_rewardLen_8/ApplesCollection.csv', index_col=False)['result'])
 
-Model_rl = list(pd.read_csv(path + 'Model_randLocation/ApplesCollection.csv', index_col=False)['result'])
+Model__randLocation = list(pd.read_csv(path + 'Model_randLocation/ApplesCollection.csv', index_col=False)['result'])
 
-Model_rl2 = list(pd.read_csv(path + 'Model_randLocation_2/ApplesCollection.csv', index_col=False)['result'])
+Model_randLocation_2 = list(pd.read_csv(path + 'Model_randLocation_2/ApplesCollection.csv', index_col=False)['result'])
 
-Model_rl3 = list(pd.read_csv(path + 'Model_randLocation_3/ApplesCollection.csv', index_col=False)['result'])
+Model_randLocation_3 = list(pd.read_csv(path + 'Model_randLocation_3/ApplesCollection.csv', index_col=False)['result'])
 
 "同质性与异质性比较"
-compareList = [Model_3, Model_rl, Model_rl2, Model_rl3]
-y_label = 'Collective benefit'  # y坐标轴名称
+compareList = [Model_1, Model_2, Model_3, Model_Random]
+y_label = 'Income'  # y坐标轴名称
 x_label = 'Episode'  # x轴名称
-label_list = ['Heterogeneous', 'Random Location-1', 'Random Location-2', 'Random Location-3']
-figPath = 'Apples_randLocation.png'  # 存储图像的地址
+label_list = ['Homogeneous Low', 'Homogeneous High', 'Heterogeneous', 'Random Action']
+figPath = 'Apples.png'  # 存储图像的地址
 
-draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=[2, 3, 4, 5])
+draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=[0, 1, 2, 4])
 
 
 # "改变学习率与固定学习率"
