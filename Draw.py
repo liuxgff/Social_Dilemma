@@ -11,13 +11,13 @@ import seaborn as sns
 import pandas as pd
 
 LABELSIZE = 12  # 图像中所有label的大小
-LEFT = 0.13  # 画布设置，距离左侧大小
+LEFT = 0.1  # 画布设置，距离左侧大小
 BOTTOM = 0.14  # 距离底部大小
-RIGHT = 0.98  # 距离右侧大小
+RIGHT = 0.77  # 距离右侧大小
 TOP = 0.98  # 距离上端大小
 
 # 设置图像大小(1英尺=2.54cm)
-WIDTH = 5
+WIDTH = 7.5
 HEIGHT = WIDTH / 1.5
 # 图像像素
 DPI = 400
@@ -49,8 +49,8 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
     FillColor2 = ['tan', 'lightcoral', 'royalblue', 'forestgreen', 'darkcyan', 'violet']
 
     for i in range(len(plot_list)):
-        updata = [j + 10 for j in plot_list[i]]
-        downdata = [j - 10 for j in plot_list[i]]
+        updata = [j + 18 for j in plot_list[i]]
+        downdata = [j - 18 for j in plot_list[i]]
         if not colorIndex:
             plt.plot(np.arange(len(plot_list[i])), plot_list[i], color=colors1[i], linewidth=1.1)
             plt.fill_between(np.arange(len(plot_list[i])), downdata, updata, facecolor=FillColor1[i], alpha=0.3)
@@ -62,7 +62,7 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
     ax.set_xticklabels([-50, 0, 50, 100, 150, 200, 250, 300])
     # 图例设置
     if label_list:
-        ax.legend(label_list)
+        ax.legend(label_list, bbox_to_anchor=(1.01, 0), loc=3, borderaxespad=0)
     plt.savefig(figPath, dpi=DPI)  # 图像存储, 设置分辨率
     plt.close()
 
