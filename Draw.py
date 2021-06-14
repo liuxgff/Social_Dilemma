@@ -77,20 +77,10 @@ def draw_heatmap(data_list, figpath):
     plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
     plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
 
-    plt.subplot(1, 2, 1)
-    apple_data = list(data_list['Apples'])
+    apple_data = list(data_list['data'])
     apple_data = pd.DataFrame(apple_data, index=['Agent1', 'Agent2', 'Agent3', 'Agent4', 'Agent5', 'Agent6'],
-                              columns=['Apples'])
-    sns.heatmap(apple_data, cmap='YlOrRd', square=True)
-    plt.xticks(fontproperties='Arial', size=LABELSIZE)
-    plt.yticks(rotation=0, fontproperties='Arial', size=LABELSIZE)
-    plt.savefig(figpath, dpi=DPI)
-
-    plt.subplot(1, 2, 2)
-    garbage_data = list(data_list['Garbage'])
-    garbage_data = pd.DataFrame(garbage_data, index=['Agent1', 'Agent2', 'Agent3', 'Agent4', 'Agent5', 'Agent6'],
-                                columns=['Garbage'])
-    sns.heatmap(garbage_data, cmap='YlOrRd', square=True)
+                              columns=['Income'])
+    sns.heatmap(apple_data, cmap='YlOrRd', square=True, vmin=0, vmax=1)
     plt.xticks(fontproperties='Arial', size=LABELSIZE)
     plt.yticks(rotation=0, fontproperties='Arial', size=LABELSIZE)
     plt.savefig(figpath, dpi=DPI)

@@ -7,7 +7,7 @@
 =================================================="""
 from Draw import draw_heatmap
 import pandas as pd
-
+import numpy as np
 import os
 
 
@@ -31,7 +31,13 @@ def draw_heatMap():
         data_path = os.path.join(each_file, 'endReward.csv')
 
         data = pd.read_csv(data_path)
-        draw_heatmap(data, os.path.join(each_file, 'heatMap.jpg'))
+        newData = np.array(data['Apples'] + data['Garbage'])
+
+        newData = newData / np.average(newData) / 2
+        newData = pd.DataFrame(newData, columns=['data'])
+
+
+        draw_heatmap(newData, os.path.join(each_file, 'heatMap.jpg'))
         # apple_data = list(pd.read_csv(data_path)['Apples'])
         # apple_data = pd.DataFrame(apple_data, index=['Agent1', 'Agent2', 'Agent3', 'Agent4', 'Agent5', 'Agent6'],
         #                           columns=['Apples'])
