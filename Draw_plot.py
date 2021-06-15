@@ -41,20 +41,26 @@ Model_randLocation_2 = list(pd.read_csv(path + 'Model_randLocation_2/ApplesColle
 Model_randLocation_3 = list(pd.read_csv(path + 'Model_randLocation_3/ApplesCollection.csv', index_col=False)['result'])
 
 "同质性与异质性比较"
-compareList = [Model_1, Model_2, Model_3, Model_Random]
-y_label = 'Income'  # y坐标轴名称
-x_label = 'Episode'  # x轴名称
-label_list = ['Homogeneous Low', 'Homogeneous High', 'Heterogeneous', 'Random Action']
-figPath = 'Apples.png'  # 存储图像的地址
-
-draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=[0, 1, 2, 4])
-
-
-# "改变学习率与固定学习率"
-# compareList = [Model_3, Model_4, Model_5]
-# y_label = 'Apple collection'  # y坐标轴名称
-# x_label = 'Episode'  # x轴名称
-# label_list = ['Heterogeneous', 'FixedLR', 'RandomAction']
-# figPath = 'Apples_lr.png'  # 存储图像的地址
+# # compareList = [Model_1, Model_2, Model_3, Model_Random]
+# compareList = [Model_3, Model__randLocation, Model_randLocation_2, Model_randLocation_3]
 #
-# draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=[2, 3, 4])
+# y_label = 'Collective reward'  # y坐标轴名称
+# x_label = 'Episode'  # x轴名称
+# label_list = ['Homogeneous Low', 'Homogeneous High', 'Heterogeneous', 'Random Action']
+# # [2, 3, 4, 5]
+# # label_list = ['Homogeneous Low', 'Homogeneous High', 'Heterogeneous', 'Random Action']
+# # [0, 1, 2, 4]
+# figPath = 'Apple_lr.png'  # 存储图像的地址
+#
+# draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath,
+#           label_list=label_list, colorIndex=[2, 3, 4, 5])
+
+
+"改变学习率与固定学习率"
+compareList = [Model_3, Model_FixedLR, Model_Random]
+y_label = 'Collective reward'  # y坐标轴名称
+x_label = 'Episode'  # x轴名称
+label_list = ['Heterogeneous', 'Fixed LR', 'Random Action']
+figPath = 'Apples_lr.png'  # 存储图像的地址
+
+draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=[2, 5, 4])

@@ -231,5 +231,5 @@ class DeepQNetwork:
         plt.plot(np.arange(len(self.cost_his)), self.cost_his)
         plt.ylabel('Cost')
         plt.xlabel('training steps')
-        plt.savefig(self.params['savePath'] + 'loss.jpg')
+        plt.savefig(self.params['savePath']+'loss.jpg')
         plt.close()

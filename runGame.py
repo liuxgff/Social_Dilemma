@@ -173,15 +173,21 @@ if __name__ == "__main__":
     #
     # run(300, 100)  # 运行游戏
 
-    Model_1 = [[10, 10, 10, 10, 10, 10], [0, 0, 0, 1, 1, 1], 'Model_1']
-    Model_2 = [[80, 80, 80, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_2']
-    Model_3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_3']
-    Model_Random = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_Random']
-    Model_randLocation = [[10, 10, 10, 80, 80, 80], [1, 1, 1, 0, 0, 0], 'Model_randLocation']
-    Model_randLocation2 = [[10, 10, 10, 80, 80, 80], [1, 1, 1, 1, 1, 1], 'Model_randLocation_2']
-    Model_randLocation3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 0, 0, 0], 'Model_randLocation_3']
+    Model_1 = [[10, 10, 10, 10, 10, 10], [0, 0, 0, 1, 1, 1], 'Model_1', 5]
+    Model_2 = [[80, 80, 80, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_2', 5]
+    Model_3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_3', 5]
+    Model_Random = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_Random', 5]
+    Model_randLocation = [[10, 10, 10, 80, 80, 80], [1, 1, 1, 0, 0, 0], 'Model_randLocation', 5]
+    Model_randLocation2 = [[10, 10, 10, 80, 80, 80], [1, 1, 1, 1, 1, 1], 'Model_randLocation_2', 5]
+    Model_randLocation3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 0, 0, 0], 'Model_randLocation_3', 5]
+    Model_FixedLR = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_FixedLR', 5]
+
+    Model_rewardLen_2 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_rewardLen_2', 2]
+    Model_rewardLen_8 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_rewardLen_8', 8]
+    Model_rewardLen_11 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_rewardLen_11', 11]
+
     # tast = [Model_randLocation2, Model_randLocation3]
-    tast = [Model_randLocation, Model_randLocation2, Model_randLocation3]
+    tast = [Model_1, Model_2, Model_3, Model_randLocation, Model_randLocation2, Model_randLocation3]
 
     for each_tast in tast:
         'agent信息'
@@ -198,7 +204,7 @@ if __name__ == "__main__":
         'agent实例化'
         for i in range(agentsNum):
             Name = chr(i + ord('A'))
-            agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=5, initAddress=agentInitArea[i]))
+            agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=each_tast[3], initAddress=agentInitArea[i]))
             # agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=5))
             agentsBrainList.append(
                 DeepQNetwork(

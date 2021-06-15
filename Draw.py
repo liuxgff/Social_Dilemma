@@ -59,7 +59,8 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
             plt.fill_between(np.arange(len(plot_list[i])), downdata, updata, facecolor=FillColor2[colorIndex[i]], alpha=0.3)
     ax.set_ylabel(y_lable)  # y轴标签
     ax.set_xlabel(x_lable)  # x轴标签
-    ax.set_xticklabels([-50, 0, 50, 100, 150, 200, 250, 300])
+    # ax.set_xticklabels([-50, 0, 50, 100, 150, 200, 250, 300])
+
     # 图例设置
     if label_list:
         ax.legend(label_list, bbox_to_anchor=(1.01, 0), loc=3, borderaxespad=0)
