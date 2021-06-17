@@ -49,8 +49,8 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
     FillColor2 = ['tan', 'lightcoral', 'royalblue', 'forestgreen', 'darkcyan', 'violet']
 
     for i in range(len(plot_list)):
-        updata = [j + 18 for j in plot_list[i]]
-        downdata = [j - 18 for j in plot_list[i]]
+        updata = [j + 180 for j in plot_list[i]]
+        downdata = [j - 180 for j in plot_list[i]]
         if not colorIndex:
             plt.plot(np.arange(len(plot_list[i])), plot_list[i], color=colors1[i], linewidth=1.1)
             plt.fill_between(np.arange(len(plot_list[i])), downdata, updata, facecolor=FillColor1[i], alpha=0.3)
