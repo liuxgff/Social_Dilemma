@@ -33,9 +33,10 @@ def draw_heatMap():
         data = pd.read_csv(data_path)
         newData = np.array(data['Apples'] + data['Garbage'])
 
-        newData = newData / np.average(newData) / 2
-        newData = pd.DataFrame(newData, columns=['data'])
+        # newData = newData / np.average(newData) / 2
+        newData = newData / 305
 
+        newData = pd.DataFrame(newData, columns=['data'])
 
         draw_heatmap(newData, os.path.join(each_file, 'heatMap.jpg'))
         # apple_data = list(pd.read_csv(data_path)['Apples'])
