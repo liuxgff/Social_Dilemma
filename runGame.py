@@ -176,6 +176,7 @@ if __name__ == "__main__":
     Model_1 = [[10, 10, 10, 10, 10, 10], [0, 0, 0, 1, 1, 1], 'Model_1', 5]
     Model_2 = [[80, 80, 80, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_2', 5]
     Model_3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_3', 5]
+
     Model_Random = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_Random', 5]
     Model_randLocation = [[10, 10, 10, 80, 80, 80], [1, 1, 1, 0, 0, 0], 'Model_randLocation', 5]
     Model_randLocation2 = [[10, 10, 10, 80, 80, 80], [1, 1, 1, 1, 1, 1], 'Model_randLocation_2', 5]
@@ -191,7 +192,7 @@ if __name__ == "__main__":
     Model_3_h = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_3_h', 5]
 
     # tast = [Model_randLocation2, Model_randLocation3]
-    tast = [Model_1_h, Model_2_h, Model_3_h]
+    tast = [Model_3]
 
     for each_tast in tast:
         'agent信息'

@@ -11,7 +11,7 @@ import numpy as np
 
 
 class Cleanup:
-    def __init__(self, ROW=12, COL=20, appleRate=0.2, garbageRate=0.15, agentsList=None, InitRandAddress=False):
+    def __init__(self, ROW=12, COL=20, appleRate=0.1, garbageRate=0.15, agentsList=None, InitRandAddress=False):
         self.ROW = ROW  # 地图的宽
         self.COL = COL   # 地图的长
         self.Map_table = None  # 创建地图
@@ -141,7 +141,7 @@ class Cleanup:
 
         'Agent的最大满足度'
         for i in range(viewSize):
-            if self.agentsList[agentNum].MaxSatisfaction == 10:
+            if self.agentsList[agentNum].MaxSatisfaction != 80:
                 M = np.append(M, 1)
             else:
                 M = np.append(M, 0)
