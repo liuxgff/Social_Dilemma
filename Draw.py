@@ -104,7 +104,7 @@ def draw_boxplot(data_list, figpath, labels):
     fig.subplots_adjust(left=LEFT, bottom=BOTTOM, right=RIGHT, top=TOP)  # 画布范围设置: 离左侧.14,距离下方.18,右侧.97,上方.97
     fig.set_size_inches(WIDTH, HEIGHT)  # 图像大小
 
-    plt.boxplot(data_list, labels=labels)
+    plt.boxplot(data_list, labels=labels, patch_artist=True, boxprops={'color': 'black', 'facecolor': 'cornflowerblue'})
     ax.set_ylabel('Collective reward')  # y轴标签
     plt.savefig(figpath, dpi=DPI)
     plt.close()
