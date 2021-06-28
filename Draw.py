@@ -86,3 +86,27 @@ def draw_heatmap(data_list, figpath):
     plt.yticks(rotation=0, fontproperties='Arial', size=LABELSIZE)
     plt.savefig(figpath, dpi=DPI)
     plt.close()
+
+
+def draw_boxplot(data_list, figpath, labels):
+    """
+    :param data_list:
+    :param figpath:
+    :return:
+    """
+    plt.rc('font', family='Arial')
+    plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
+    plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
+    plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
+    # 建立画布
+    fig, ax = plt.subplots()
+    plt.grid()  # 生成网格
+    fig.subplots_adjust(left=LEFT, bottom=BOTTOM, right=RIGHT, top=TOP)  # 画布范围设置: 离左侧.14,距离下方.18,右侧.97,上方.97
+    fig.set_size_inches(WIDTH, HEIGHT)  # 图像大小
+
+    plt.boxplot(data_list, labels=labels)
+    ax.set_ylabel('Collective reward')  # y轴标签
+    plt.savefig(figpath, dpi=DPI)
+    plt.close()
+
+

@@ -183,6 +183,7 @@ if __name__ == "__main__":
     Model_randLocation3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 0, 0, 0], 'Model_randLocation_3', 5]
     Model_FixedLR = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_FixedLR', 5]
 
+    Model_rewardLen_1 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度1', 1]
     Model_rewardLen_2 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_rewardLen_2', 2]
     Model_rewardLen_8 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_rewardLen_8', 8]
     Model_rewardLen_11 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_rewardLen_11', 11]
@@ -192,7 +193,7 @@ if __name__ == "__main__":
     Model_3_h = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_3_h', 5]
 
     # tast = [Model_randLocation2, Model_randLocation3]
-    tast = [Model_3]
+    tast = [Model_rewardLen_1]
 
     for each_tast in tast:
         'agent信息'
