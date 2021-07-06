@@ -21,58 +21,25 @@ HEIGHT = WIDTH / 1.5
 # 图像像素
 DPI = 400
 
-path = 'Result/'
 
-Model_1 = list(pd.read_csv(path + 'Model_1/ApplesCollection.csv', index_col=False)['result'])
-
-Model_2 = list(pd.read_csv(path + 'Model_2/ApplesCollection.csv', index_col=False)['result'])
-
-Model_3 = list(pd.read_csv(path + 'Model_3/ApplesCollection.csv', index_col=False)['result'])
-
-Model_1_h = list(pd.read_csv(path + 'Model_1_h/ApplesCollection.csv', index_col=False)['result'])
-
-Model_2_h = list(pd.read_csv(path + 'Model_2_h/ApplesCollection.csv', index_col=False)['result'])
-
-Model_3_h = list(pd.read_csv(path + 'Model_3_h/ApplesCollection.csv', index_col=False)['result'])
-
-Model_FixedLR = list(pd.read_csv(path + 'Model_FixedLR/ApplesCollection.csv', index_col=False)['result'])
-
-Model_Random = list(pd.read_csv(path + 'Model_Random/ApplesCollection.csv', index_col=False)['result'])
-
-Model_6 = list(pd.read_csv(path + 'Model_rewardLen_8/ApplesCollection.csv', index_col=False)['result'])
-
-Model__randLocation = list(pd.read_csv(path + 'Model_randLocation/ApplesCollection.csv', index_col=False)['result'])
-
-Model_randLocation_2 = list(pd.read_csv(path + 'Model_randLocation_2/ApplesCollection.csv', index_col=False)['result'])
-
-Model_randLocation_3 = list(pd.read_csv(path + 'Model_randLocation_3/ApplesCollection.csv', index_col=False)['result'])
-
-"同质性与异质性比较"
-# compareList = [Model_1, Model_2, Model_3, Model_Random]
-# compareList = [Model_3, Model__randLocation, Model_randLocation_2, Model_randLocation_3]
-# compareList = [Model_3, Model_FixedLR, Model_Random]
-
-# y_label = 'Collective reward'  # y坐标轴名称
-# x_label = 'Episode'  # x轴名称
-# label_list = ['Heterogeneous', 'Fixed Learning Rate', 'Random Action']
-# label_list = ['Homogeneous Low', 'Homogeneous High', 'Heterogeneous', 'Random Action']
-# [2, 3, 4, 5]
-# label_list = ['Random location-1', 'Random location-2', 'Random location-3', 'Random location-4']
-# [0, 1, 2, 4]
-# figPath = 'Apple_fixed_lr.png'  # 存储图像的地址
-
-# draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath,
-#           label_list=label_list, colorIndex=[2, 5, 4])
+def getData(dataName):
+    """
+    获得图像数据
+    :return:
+    """
+    path = 'Result/'
+    return list(pd.read_csv(path + dataName + '/ApplesCollection.csv', index_col=False)['result'])
 
 
-# "改变学习率与固定学习率"
-# compareList = [Model_3, Model_FixedLR, Model_Random]
-# y_label = 'Collective reward'  # y坐标轴名称
-# x_label = 'Episode'  # x轴名称
-# label_list = ['Heterogeneous', 'Fixed LR', 'Random Action']
-# figPath = 'Apples_lr.png'  # 存储图像的地址
-#
-# draw_list(plot_list=compareList, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=label_list, colorIndex=[2, 5, 4])
+"动态学习率与固定学习率比较"
+compareList = [getData('异质群体'), getData('固定学习率'), getData('随机动作')]
+draw_list(plot_list=compareList, y_lable='Collective return', x_lable='Episode', figPath='动态学习率与固定学习率.pdf',
+          label_list=['Heterogeneous', 'Fixed Learning Rate', 'Random Action'], colorIndex=[2, 5, 4])
+
+"异质性群体与同质性群体比较"
+compareList = [getData('同质低目标收益群体'), getData('同质高目标收益群体'), getData('异质群体'), getData('随机动作')]
+draw_list(plot_list=compareList, y_lable='Collective return', x_lable='Episode', figPath='异质性群体与同质性群体.pdf',
+          label_list=['Homogeneous Low', 'Homogeneous High', 'Heterogeneous', 'Random Action'], colorIndex=[0, 1, 2, 4])
 
 
 

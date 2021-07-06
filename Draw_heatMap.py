@@ -38,17 +38,6 @@ def draw_heatMap():
 
         newData = pd.DataFrame(newData, columns=['data'])
 
-        draw_heatmap(newData, os.path.join(each_file, 'heatMap.jpg'))
-        # apple_data = list(pd.read_csv(data_path)['Apples'])
-        # apple_data = pd.DataFrame(apple_data, index=['Agent1', 'Agent2', 'Agent3', 'Agent4', 'Agent5', 'Agent6'],
-        #                           columns=['Apples'])
-        #
-        # garbage_data = list(pd.read_csv(data_path)['Garbage'])
-        # garbage_data = pd.DataFrame(garbage_data, index=['Agent1', 'Agent2', 'Agent3', 'Agent4', 'Agent5', 'Agent6'],
-        #                             columns=['Garbage'])
-        #
-        # draw_heatmap(apple_data, os.path.join(each_file, 'apple_heatMap.jpg'))
-        # draw_heatmap(garbage_data, os.path.join(each_file, 'garbage_heatMap.jpg'))
-
+        draw_heatmap(newData, os.path.join(each_file, 'heatMap.pdf'))
 
 draw_heatMap()

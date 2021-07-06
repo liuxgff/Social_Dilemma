@@ -51,7 +51,7 @@ def draw_endApple_Num(appleList):
 def draw_Agent_area(AgentArea, nameList, colorIndex=None):
     y_label = 'Position'  # y坐标轴名称
     x_label = 'Steps'  # x轴名称
-    figPath = Model_number + '/Agent_Area.png'  # 存储图像的地址
+    figPath = Model_number + '/Agent_Area.pdf'  # 存储图像的地址
     draw_list(plot_list=AgentArea, y_lable=y_label, x_lable=x_label, figPath=figPath, label_list=nameList, colorIndex=colorIndex)
 
 
@@ -140,60 +140,26 @@ def run(gameRound, Steps):
     nameList = ['Agent ' + str(p+1) for p in range(len(agentsList))]
     draw_Agent_area(AgentArea, nameList, colorIndex=[0, 1, 2, 3, 4, 5])
 
+    "Agent的活动区域"
+    AgentArea = [list(i) for i in zip(AgentArea[0], AgentArea[1], AgentArea[2], AgentArea[3], AgentArea[4], AgentArea[5])]
+    pd.DataFrame(data=AgentArea, columns=nameList).to_csv(Model_number + '/activate.csv', index=False)
+
 
 if __name__ == "__main__":
 
-    # 'agent信息'
-    # agentsNum = 6  # 玩家个数
-    # agentsList = []  # 玩家列表
-    # agentsBrainList = []  # agent训练网络
-    # MaxSatisfaction = [10, 10, 10, 80, 80, 80]  # 玩家满足度
-    #
-    # '模型信息'
-    # number = 'Random'  # 模型编号
-    # Model_number = 'Result/Model_' + str(number)
-    # createFolder(Model_number)
-    # agentInitArea = [0, 0, 0, 1, 1, 1]
-    #
-    # 'agent实例化'
-    # for i in range(agentsNum):
-    #     Name = chr(i + ord('A'))
-    #     agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=8, initAddress=agentInitArea[i]))
-    #     # agentsList.append(Agent(Name, MaxSatisfaction[i], rewardLen=5))
-    #     agentsBrainList.append(
-    #         DeepQNetwork(
-    #             batch_size=8,
-    #             agentName=Name,
-    #             memory_size=500,
-    #             savePath=Model_number + '/' + Name))
-    #
-    # '地图信息'
-    # cle = Cleanup(agentsList=agentsList, InitRandAddress=True)  # 游戏地图实例
-    # # cle = Cleanup(agentsList=agentsList)  # 游戏地图实例
-    #
-    # run(300, 100)  # 运行游戏
+    Model_1 = [[10, 10, 10, 10, 10, 10], [0, 0, 0, 1, 1, 1], '同质低目标收益群体', 5]
+    Model_2 = [[80, 80, 80, 80, 80, 80], [0, 0, 0, 1, 1, 1], '同质高目标收益群体', 5]
+    Model_3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '异质群体', 5]
+    Model_Random = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '随机动作', 5]
 
-    Model_1 = [[10, 10, 10, 10, 10, 10], [0, 0, 0, 1, 1, 1], 'Model_1', 5]
-    Model_2 = [[80, 80, 80, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_2', 5]
-    Model_3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_3', 5]
-
-    Model_Random = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_Random', 5]
-    Model_randLocation = [[10, 10, 10, 80, 80, 80], [1, 1, 1, 0, 0, 0], 'Model_randLocation', 5]
-    Model_randLocation2 = [[10, 10, 10, 80, 80, 80], [1, 1, 1, 1, 1, 1], 'Model_randLocation_2', 5]
-    Model_randLocation3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 0, 0, 0], 'Model_randLocation_3', 5]
     Model_FixedLR = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_FixedLR', 5]
 
-    Model_rewardLen_1 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度1', 1]
-    Model_rewardLen_2 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_rewardLen_2', 2]
-    Model_rewardLen_8 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_rewardLen_8', 8]
-    Model_rewardLen_11 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_rewardLen_11', 11]
+    Model_rewardLen_2 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度2', 2]
+    Model_rewardLen_8 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度8', 8]
+    Model_rewardLen_11 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度11', 11]
 
-    Model_1_h = [[10, 10, 10, 10, 10, 10], [0, 0, 0, 1, 1, 1], 'Model_1_h', 5]
-    Model_2_h = [[80, 80, 80, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_2_h', 5]
-    Model_3_h = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_3_h', 5]
-
-    # tast = [Model_randLocation2, Model_randLocation3]
-    tast = [Model_rewardLen_1]
+    tast = [Model_1, Model_2, Model_3]
+    # tast = [Model_Random]
 
     for each_tast in tast:
         'agent信息'

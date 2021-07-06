@@ -49,8 +49,8 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
     FillColor2 = ['tan', 'lightcoral', 'royalblue', 'forestgreen', 'darkcyan', 'violet']
 
     for i in range(len(plot_list)):
-        updata = [j + 180 for j in plot_list[i]]
-        downdata = [j - 180 for j in plot_list[i]]
+        updata = [j + 18 for j in plot_list[i]]
+        downdata = [j - 18 for j in plot_list[i]]
         if not colorIndex:
             plt.plot(np.arange(len(plot_list[i])), plot_list[i], color=colors1[i], linewidth=1.1)
             plt.fill_between(np.arange(len(plot_list[i])), downdata, updata, facecolor=FillColor1[i], alpha=0.3)
@@ -64,7 +64,7 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
     # 图例设置
     if label_list:
         ax.legend(label_list, bbox_to_anchor=(1.01, 0), loc=3, borderaxespad=0)
-    plt.savefig(figPath, dpi=DPI)  # 图像存储, 设置分辨率
+    plt.savefig(figPath, bbox_inches='tight')  # 图像存储, 设置分辨率
     plt.close()
 
 
@@ -84,7 +84,7 @@ def draw_heatmap(data_list, figpath):
     sns.heatmap(apple_data, cmap='YlOrRd', square=True, vmin=50, vmax=650)
     plt.xticks(fontproperties='Arial', size=LABELSIZE)
     plt.yticks(rotation=0, fontproperties='Arial', size=LABELSIZE)
-    plt.savefig(figpath, dpi=DPI)
+    plt.savefig(figpath, bbox_inches='tight')
     plt.close()
 
 
@@ -105,8 +105,8 @@ def draw_boxplot(data_list, figpath, labels):
     fig.set_size_inches(WIDTH, HEIGHT)  # 图像大小
 
     plt.boxplot(data_list, labels=labels, patch_artist=True, boxprops={'color': 'black', 'facecolor': 'cornflowerblue'})
-    ax.set_ylabel('Collective reward')  # y轴标签
-    plt.savefig(figpath, dpi=DPI)
+    ax.set_ylabel('Collective return')  # y轴标签
+    plt.savefig(figpath, bbox_inches='tight')
     plt.close()
 
 
