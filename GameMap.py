@@ -11,7 +11,7 @@ import numpy as np
 
 
 class Cleanup:
-    def __init__(self, ROW=12, COL=20, appleRate=0.1, garbageRate=0.15, agentsList=None, InitRandAddress=False):
+    def __init__(self, ROW=12, COL=20, appleRate=0.1, garbageRate=0.15, agentsList=None, InitRandAddress=False, appleReward=8):
         self.ROW = ROW  # 地图的宽
         self.COL = COL   # 地图的长
         self.Map_table = None  # 创建地图
@@ -22,6 +22,7 @@ class Cleanup:
         self.garbageRate = garbageRate  # 苹果的生长率系数
         self.agentsList = agentsList  # 玩家列表
         self.initRandAddress = InitRandAddress  # 玩家初始位置
+        self.apple_reward = appleReward  # 采集苹果获得的奖励
         self.doAction = [[-1, 1, 0, 0], [0, 0, -1, 1]]  # 动作矩阵，上下左右
         self.income = 0  # 采集苹果的数量
 
@@ -192,8 +193,9 @@ class Cleanup:
         if self.Map_table[x_, y_] == self.aStr:
             self.apple_N -= 1  # 苹果数量减一
             # 采集苹果获得奖励
-            realReward = 10  # 实际奖励
-            self.income += realReward
+            realReward = self.apple_reward  # 实际奖励
+            # self.income += realReward
+            self.income += 1
             self.agentsList[agentNum].ownAppleNum += realReward  # 每轮agent采集苹果的数量
             if len(self.agentsList[agentNum].currentSatisfaction) == self.agentsList[agentNum].rewardLen:
                 self.agentsList[agentNum].currentSatisfaction.pop(0)
@@ -241,10 +243,10 @@ class Cleanup:
                             self.garbage_N -= 1
                             temp_num_g += 1
             # 清理垃圾获得奖励
-            realReward = temp_num_g / (math.pow(self.agentsList[agentNum].view + 1, 2) - 1) * 5
+            realReward = temp_num_g / (math.pow(self.agentsList[agentNum].view + 1, 2) - 1) * self.apple_reward * 0.5
             # 每轮agent采集垃圾的奖励
             self.agentsList[agentNum].ownGarbageNum += realReward
-            self.income += realReward
+            # self.income += realReward
             if len(self.agentsList[agentNum].currentSatisfaction) == self.agentsList[agentNum].rewardLen:
                 self.agentsList[agentNum].currentSatisfaction.pop(0)
             self.agentsList[agentNum].currentSatisfaction.append(realReward)

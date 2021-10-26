@@ -32,7 +32,7 @@ def draw_apple_garbage(apple_garbage):
     y_label = 'Apples and Garbage'  # y坐标轴名称
     x_label = 'Steps'  # x轴名称
     label_list = ['Apple', 'Garbage']
-    figPath = Model_number + '/Apple&Garbage.png'  # 存储图像的地址
+    figPath = Model_number + '/Apple&Garbage.pdf'  # 存储图像的地址
     draw_list(apple_garbage, y_label, x_label, figPath, label_list)  # 绘图
 
 
@@ -44,7 +44,7 @@ def draw_endApple_Num(appleList):
     """
     y_label = 'The number of apples'  # y坐标轴名称
     x_label = 'Episode'  # x轴名称
-    figPath = Model_number + '/AppleNum.png'  # 存储图像的地址
+    figPath = Model_number + '/AppleNum.pdf'  # 存储图像的地址
     draw_list(appleList, y_label, x_label, figPath)  # 绘图
 
 
@@ -65,6 +65,8 @@ def run(gameRound, Steps):
     incomeList = []  # 每轮采集苹果的数量
     incomeSum = 0  # 统计10轮内的采集苹果的数量
     AgentsReward = [[0, 0] for _ in range(len(agentsList))]  # Agent的得分情况
+    AgentArea = [[] for _ in range(len(agentsList))]  # agent每轮的移动轨迹
+    learn_rate = [[] for _ in range(len(agentsList))]  # 每轮agent的学习率变换
 
     # 进行N轮游戏
     for Game_round in range(gameRound):
@@ -80,6 +82,7 @@ def run(gameRound, Steps):
             for agentIndex, eachAgent in enumerate(agentsList):
                 "存储agent当前的位置"
                 AgentArea[agentIndex].append(cle.getAddressIndex(agentIndex))
+                learn_rate[agentIndex].append(agentsBrainList[agentIndex].get_lr())
 
                 '学习过程'
                 observation = cle.getAgent(agentIndex)  # 获得当前状态
@@ -124,10 +127,11 @@ def run(gameRound, Steps):
             eachAgent.intitAgentData()
         cle.newMap()  # 初始化地图
 
-    "存储模型"
-    for _, eachBrain in enumerate(agentsBrainList):
-        eachBrain.plot_cost()
-
+    # "存储模型"
+    # for _, eachBrain in enumerate(agentsBrainList):
+    #     eachBrain.plot_cost()
+    "显示每轮采集苹果的数量"
+    draw_endApple_Num([incomeList])
     "存储苹果数量"
     pd.DataFrame(incomeList, columns=['result']).to_csv(Model_number + '/ApplesCollection.csv', index=False)
 
@@ -135,8 +139,6 @@ def run(gameRound, Steps):
     pd.DataFrame(AgentsReward, columns=['Apples', 'Garbage']).to_csv(Model_number + '/endReward.csv', index=False)
 
     "绘图"
-    draw_endApple_Num([incomeList])  # 最后采集苹果总数
-    draw_apple_garbage(apple_garbage)  # 一轮中苹果和垃圾数量的变化
     nameList = ['Agent ' + str(p+1) for p in range(len(agentsList))]
     draw_Agent_area(AgentArea, nameList, colorIndex=[0, 1, 2, 3, 4, 5])
 
@@ -144,22 +146,60 @@ def run(gameRound, Steps):
     AgentArea = [list(i) for i in zip(AgentArea[0], AgentArea[1], AgentArea[2], AgentArea[3], AgentArea[4], AgentArea[5])]
     pd.DataFrame(data=AgentArea, columns=nameList).to_csv(Model_number + '/activate.csv', index=False)
 
+    "学习率"
+    learn_rate = [list(i) for i in zip(learn_rate[0], learn_rate[1], learn_rate[2], learn_rate[3], learn_rate[4], learn_rate[5])]
+    pd.DataFrame(data=learn_rate, columns=nameList).to_csv(Model_number + '/learn_rate.csv', index=False)
+
 
 if __name__ == "__main__":
 
-    Model_1 = [[10, 10, 10, 10, 10, 10], [0, 0, 0, 1, 1, 1], '同质低目标收益群体', 5]
-    Model_2 = [[80, 80, 80, 80, 80, 80], [0, 0, 0, 1, 1, 1], '同质高目标收益群体', 5]
-    Model_3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '异质群体', 5]
-    Model_Random = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '随机动作', 5]
+    # Model_1 = [[10, 10, 10, 10, 10, 10], [0, 0, 0, 1, 1, 1], '同质低目标收益群体', 5]
+    # Model_2 = [[80, 80, 80, 80, 80, 80], [0, 0, 0, 1, 1, 1], '同质高目标收益群体', 5]
+    # Model_3 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '异质群体', 5]
+    # Model_Random = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '随机动作', 5]
+    #
+    # Model_FixedLR = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_FixedLR', 5]
+    #
+    # Model_rewardLen_2 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度2', 2]
+    # Model_rewardLen_8 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度8', 8]
+    # Model_rewardLen_11 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度11', 11]
+    No1 = [[1.25, 1.25, 1.25, 5, 5, 5], [0, 0, 0, 1, 1, 1], 'No1_苹果奖励为1_累计长度为5', 5, 1]
+    No2 = [[5, 5, 5, 20, 20, 20], [0, 0, 0, 1, 1, 1], 'No2_苹果奖励为4_累计长度为5', 5, 4]
+    No3 = [[10, 10, 10, 40, 40, 40], [0, 0, 0, 1, 1, 1], 'No3_苹果奖励为8_累计长度为5', 5, 8]
+    No4 = [[12.5, 12.5, 12.5, 50, 50, 50], [0, 0, 0, 1, 1, 1], 'No4_苹果奖励为10_累计长度为5', 5, 10]
+    No5 = [[15, 15, 15, 60, 60, 60], [0, 0, 0, 1, 1, 1], 'No5_苹果奖励为12_累计长度为5', 5, 12]
+    No6 = [[17.5, 17.5, 17.5, 70, 70, 70], [0, 0, 0, 1, 1, 1], 'No6_苹果奖励为14_累计长度为5', 5, 14]
 
-    Model_FixedLR = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], 'Model_FixedLR', 5]
+    No7 = [[10, 10, 10, 40, 40, 40], [0, 0, 0, 1, 1, 1], 'No7_苹果奖励为8_累计长度为2', 2, 8]
+    No8 = [[10, 10, 10, 40, 40, 40], [0, 0, 0, 1, 1, 1], 'No8_苹果奖励为8_累计长度为5', 5, 8]
+    No9 = [[10, 10, 10, 40, 40, 40], [0, 0, 0, 1, 1, 1], 'No9_苹果奖励为8_累计长度为8', 8, 8]
+    No10 = [[10, 10, 10, 40, 40, 40], [0, 0, 0, 1, 1, 1], 'No10_苹果奖励为8_累计长度为11', 11, 8]
 
-    Model_rewardLen_2 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度2', 2]
-    Model_rewardLen_8 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度8', 8]
-    Model_rewardLen_11 = [[10, 10, 10, 80, 80, 80], [0, 0, 0, 1, 1, 1], '累计收益长度11', 11]
+    No11 = [[4, 4, 4, 16, 16, 16], [0, 0, 0, 1, 1, 1], 'No11_苹果奖励为8_累计长度为2', 2, 8]
+    No12 = [[10, 10, 10, 40, 40, 40], [0, 0, 0, 1, 1, 1], 'No12_苹果奖励为8_累计长度为5', 5, 8]
+    No13 = [[16, 16, 16, 64, 64, 64], [0, 0, 0, 1, 1, 1], 'No13_苹果奖励为8_累计长度为8', 8, 8]
+    No14 = [[22, 22, 22, 88, 88, 88], [0, 0, 0, 1, 1, 1], 'No14_苹果奖励为8_累计长度为11', 11, 8]
 
-    tast = [Model_1, Model_2, Model_3]
+    # tast = [No1, No2, No3, No4, No5, No6, No7, No8, No9, No10, No11, No12, No13, No14]
     # tast = [Model_Random]
+
+    "对不同累计收益长度的比较: 苹果奖励为10, 高目标收益者=50, 低目标收益者为12.5"
+    # tast = []
+    # for i in range(2, 25, 4):
+    #     path = '累计收益长度/长度=' + str(i)
+    #     tast.append([[12.5, 12.5, 12.5, 50, 50, 50], [0, 0, 0, 1, 1, 1], path, i, 10])
+    # tast = [[[12.5, 12.5, 12.5, 50, 50, 50], [0, 0, 0, 1, 1, 1], '累计收益长度/长度=8', 8, 10]]
+
+    "对不同累计收益长度的比较: 苹果奖励为1, 高目标收益者=5, 低目标收益者为1.25"
+    tast = []
+    for i in range(2, 25, 4):
+        path = '累计收益长度/苹果奖励=8/长度=' + str(i)
+        tast.append([[1.25, 1.25, 1.25, 5, 5, 5], [0, 0, 0, 1, 1, 1], path, i, 1])
+    tast.append([[1.25, 1.25, 1.25, 5, 5, 5], [0, 0, 0, 1, 1, 1], '累计收益长度/苹果奖励=8/长度=8', 8, 1])
+
+    "对不同累计收益长度的比较: 苹果奖励为8, 高目标收益者=40, 低目标收益者为10"
+
+    "对不同累计收益长度的比较: 苹果奖励为14, 高目标收益者=70, 低目标收益者为17.5"
 
     for each_tast in tast:
         'agent信息'
@@ -186,8 +226,8 @@ if __name__ == "__main__":
                              savePath=Model_number + '/' + Name))
 
         '地图信息'
-        cle = Cleanup(agentsList=agentsList, InitRandAddress=True)  # 游戏地图实例
+        cle = Cleanup(agentsList=agentsList, InitRandAddress=True, appleReward=each_tast[4])  # 游戏地图实例
         # cle = Cleanup(agentsList=agentsList)  # 游戏地图实例
-
+        print('tast:', each_tast[2])
         '运行游戏'
         run(305, 100)

@@ -24,7 +24,7 @@ DPI = 400
 
 
 # 折线图绘图设置(数据列表, y轴名称, x轴名称, 图像存储地址, 标签列表)
-def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=None, colorIndex=None):
+def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=None, colorIndex=None, allReward=False):
     # plt.rc对全图字体进行统一修改
     plt.figure(1)  # 图像编号
 
@@ -47,10 +47,12 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
     FillColor1 = ['wheat', 'cornflowerblue']
     colors2 = ['darkorange', 'r',  'b', 'darkgreen', 'darkslategray', 'purple']
     FillColor2 = ['tan', 'lightcoral', 'royalblue', 'forestgreen', 'darkcyan', 'violet']
-
+    shadow = 18
+    if allReward:
+        shadow = 180
     for i in range(len(plot_list)):
-        updata = [j + 18 for j in plot_list[i]]
-        downdata = [j - 18 for j in plot_list[i]]
+        updata = [j + shadow for j in plot_list[i]]
+        downdata = [j - shadow for j in plot_list[i]]
         if not colorIndex:
             plt.plot(np.arange(len(plot_list[i])), plot_list[i], color=colors1[i], linewidth=1.1)
             plt.fill_between(np.arange(len(plot_list[i])), downdata, updata, facecolor=FillColor1[i], alpha=0.3)
