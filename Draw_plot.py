@@ -67,7 +67,7 @@ def compare_rewardLen():
     """
     all_rewardLen = {}
     root = os.getcwd()
-    root = os.path.join(root, 'Result/累计收益长度')
+    root = os.path.join(root, 'Result/累计收益长度/苹果奖励=4')
     for each_rPath in os.listdir(root):
         data_path = os.path.join(root, each_rPath)
         lenNum = int(each_rPath.split('=')[1])
@@ -99,11 +99,8 @@ def compare_rewardLen():
     ax.set_ylabel('Insect collecting amount')  # y轴标签
     ax.set_xlabel('Cumulative profit length')  # x轴标签
 
-    plt.savefig('比较不同累计收益长度.pdf', bbox_inches='tight')  # 图像存储, 设置分辨率
+    plt.savefig(os.path.join(root, '比较不同累计收益长度.pdf'), bbox_inches='tight')  # 图像存储, 设置分辨率
     plt.close()
 
 
 compare_rewardLen()
-
-
-
