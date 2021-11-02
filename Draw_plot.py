@@ -134,9 +134,9 @@ def compare_all_lenReward():
     # ax.spines['top'].set_visible(False)  # 取消左边框
 
     fig.set_size_inches(WIDTH, HEIGHT)  # 图像大小
-    label_list = ['apple_reward=1', 'apple_reward=4', 'apple_reward=8', 'apple_reward=10', 'apple_reward=14']  # 图例
-    colors = ['darkorange', 'r', 'b', 'g', 'purple']
-    markers = ['^', 's', 'o', 'd', 'X']
+    label_list = ['apple_reward=1', 'apple_reward=4', 'apple_reward=8', 'apple_reward=10', 'apple_reward=14', 'apple_reward=16']  # 图例
+    colors = ['darkorange', 'r', 'b', 'g', 'purple','y']
+    markers = ['^', 's', 'o', 'd', 'X','.']
     different_reward = []
     for _, path in alldata_path:
         reward_path = os.path.join(root, path)
@@ -165,5 +165,5 @@ def compare_all_lenReward():
     plt.close()
 
 
-compare_rewardLen()
+# compare_rewardLen()
 # compare_all_lenReward()
