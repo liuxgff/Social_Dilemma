@@ -83,7 +83,7 @@ def draw_heatmap(data_list, figpath):
     apple_data = list(data_list['data'])
     apple_data = pd.DataFrame(apple_data, index=['Agent1', 'Agent2', 'Agent3', 'Agent4', 'Agent5', 'Agent6'],
                               columns=['Reward'])
-    sns.heatmap(apple_data, cmap='YlOrRd', square=True, vmin=50, vmax=650)
+    sns.heatmap(apple_data, cmap='YlOrRd', square=True, vmin=0, vmax=0.5)
     plt.xticks(fontproperties='Arial', size=LABELSIZE)
     plt.yticks(rotation=0, fontproperties='Arial', size=LABELSIZE)
     plt.savefig(figpath, bbox_inches='tight')

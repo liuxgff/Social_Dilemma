@@ -28,13 +28,14 @@ def get_all_file(path):
 def draw_heatMap():
     file_list = get_all_file(os.path.join(os.getcwd(), 'Result'))
     for each_file in file_list:
+        if each_file == 'D:\Pycharm\Projects\多智能体\Social_Dilemma\Result\累计收益长度':
+            continue
         data_path = os.path.join(each_file, 'endReward.csv')
 
         data = pd.read_csv(data_path)
         newData = np.array(data['Apples'] + data['Garbage'])
-
+        newData = newData / np.sum(newData)
         # newData = newData / np.average(newData) / 2
-        newData = newData / 305
 
         newData = pd.DataFrame(newData, columns=['data'])
 

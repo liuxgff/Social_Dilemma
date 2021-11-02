@@ -140,20 +140,18 @@ def compare_all_lenReward():
     different_reward = []
     for _, path in alldata_path:
         reward_path = os.path.join(root, path)
-        data_lable = []
-        sum_list = []
+        mean_list = []
+        avg_list = []
         for each_len in len_path:
             dataPath = os.path.join(reward_path, each_len)
             data = list(pd.read_csv(dataPath + '/ApplesCollection.csv', index_col=False)['result'])
-            avg = int(np.average(data))
-            var = int(np.var(data))
-            sum = np.sum(data)
-            data_lable.append('avg:' + str(avg) + ' var:' + str(var) + ' sum: ' + str(sum))
-            sum_list.append(sum)
-        different_reward.append(sum_list)
+            mean_list.append(np.mean(data))
+            avg_list.append(np.std(data))
+        different_reward.append([mean_list, avg_list])
     xlen = [1, 2, 5, 6, 8, 10, 14, 18, 22]
     for index, eachPlot in enumerate(different_reward):
-        plt.plot(np.arange(len(xlen)), eachPlot, color=colors[index], linewidth=1.5, marker=markers[index])
+        plt.plot(np.arange(len(xlen)), eachPlot[0], color=colors[index], linewidth=1.5, marker=markers[index])
+        # plt.errorbar(np.arange(len(xlen)), eachPlot[0], eachPlot[1], color=colors[index], ecolor=colors[index], linewidth=1.5, marker=markers[index])
     plt.xticks(np.arange(len(xlen)), xlen)
 
     ax.set_ylabel(y_lable)  # y轴标签
@@ -166,4 +164,4 @@ def compare_all_lenReward():
 
 
 # compare_rewardLen()
-# compare_all_lenReward()
+compare_all_lenReward()
