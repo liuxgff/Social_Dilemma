@@ -24,7 +24,8 @@ class Cleanup:
         self.initRandAddress = InitRandAddress  # 玩家初始位置
         self.apple_reward = appleReward  # 采集苹果获得的奖励
         self.doAction = [[-1, 1, 0, 0], [0, 0, -1, 1]]  # 动作矩阵，上下左右
-        self.income = 0  # 采集苹果的数量
+        self.income = 0  # 获得的总分数
+        self.appleNum = 0  # 采集苹果的数量
 
         self.aStr = '+'  # 苹果表示
         self.gStr = '-'  # 垃圾表示
@@ -90,7 +91,8 @@ class Cleanup:
 
     # 地图初始化
     def newMap(self):
-        self.income = 0  # 采集苹果的总个数
+        self.income = 0
+        self.appleNum = 0
         self.apple_N = 0  # 苹果的个数
         self.garbage_N = 0  # 垃圾的个数
         self.build()  # 创建地图
@@ -194,8 +196,8 @@ class Cleanup:
             self.apple_N -= 1  # 苹果数量减一
             # 采集苹果获得奖励
             realReward = self.apple_reward  # 实际奖励
-            # self.income += realReward
-            self.income += 1
+            self.income += realReward
+            self.appleNum += 1
             self.agentsList[agentNum].ownAppleNum += realReward  # 每轮agent采集苹果的数量
             if len(self.agentsList[agentNum].currentSatisfaction) == self.agentsList[agentNum].rewardLen:
                 self.agentsList[agentNum].currentSatisfaction.pop(0)
@@ -246,7 +248,7 @@ class Cleanup:
             realReward = temp_num_g / (math.pow(self.agentsList[agentNum].view + 1, 2) - 1) * self.apple_reward * 0.5
             # 每轮agent采集垃圾的奖励
             self.agentsList[agentNum].ownGarbageNum += realReward
-            # self.income += realReward
+            self.income += realReward
             if len(self.agentsList[agentNum].currentSatisfaction) == self.agentsList[agentNum].rewardLen:
                 self.agentsList[agentNum].currentSatisfaction.pop(0)
             self.agentsList[agentNum].currentSatisfaction.append(realReward)

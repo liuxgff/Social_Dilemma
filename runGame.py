@@ -62,8 +62,10 @@ def run(gameRound, Steps):
     :return:
     """
     step = 0
-    incomeList = []  # 每轮采集苹果的数量
-    incomeSum = 0  # 统计10轮内的采集苹果的数量
+    incomeList = []  # 每轮的总得分
+    appleNumList = []  # 每轮采集苹果的数量
+    incomeSum = 0  # 统计10轮内的得分
+    appleNum = 0  # 统计10轮内的采集苹果的数量
     AgentsReward = [[0, 0] for _ in range(len(agentsList))]  # Agent的得分情况
     AgentArea = [[] for _ in range(len(agentsList))]  # agent每轮的移动轨迹
     learn_rate = [[] for _ in range(len(agentsList))]  # 每轮agent的学习率变换
@@ -117,10 +119,13 @@ def run(gameRound, Steps):
 
         print("第%d轮：" % Game_round, "集体收益 = %d" % cle.income)
         incomeSum += cle.income
+        appleNum += cle.appleNum
 
         if (Game_round+1) % AVG == 0:  # 记录10轮内的平均采集数量
             incomeList.append(incomeSum // AVG)  # 记录本轮采集的苹果总数
+            appleNumList.append(appleNum // AVG)
             incomeSum = 0
+            appleNum = 0
         for agentIndex, eachAgent in enumerate(agentsList):  # 初始化Agent
             AgentsReward[agentIndex][0] += eachAgent.ownAppleNum
             AgentsReward[agentIndex][1] += eachAgent.ownGarbageNum
@@ -130,9 +135,13 @@ def run(gameRound, Steps):
     # "存储模型"
     # for _, eachBrain in enumerate(agentsBrainList):
     #     eachBrain.plot_cost()
-    "显示每轮采集苹果的数量"
+    "显示每轮收益的图像"
     draw_endApple_Num([incomeList])
+    "显示每轮采集苹果的图像"
+    draw_endApple_Num([appleNumList])
     "存储苹果数量"
+    pd.DataFrame(appleNumList, columns=['result']).to_csv(Model_number + '/AppleNum.csv', index=False)
+    "存储收益"
     pd.DataFrame(incomeList, columns=['result']).to_csv(Model_number + '/ApplesCollection.csv', index=False)
 
     "存储每个Agent的得分"
@@ -169,6 +178,7 @@ if __name__ == "__main__":
 
     tast = []
     "异质群体实验: 苹果奖励=10, 高目标收益者=50, 低目标收益者=12.5, 初始位置固定[0,0,0,1,1,1]"
+    tast.append([[12.5, 12.5, 12.5, 50, 50, 50], [0, 0, 0, 1, 1, 1], '异质群体', 5, 10])
     "同质高目标收益群体实验: 苹果奖励=10, 目标收益者均=50, 初始位置固定[0,0,0,1,1,1]"
     tast.append([[50, 50, 50, 50, 50, 50], [0, 0, 0, 1, 1, 1], '同质高目标收益群体', 5, 10])
     "同质低目标收益群体实验: 苹果奖励=10, 目标收益者均=12.5, 初始位置固定[0,0,0,1,1,1]"
