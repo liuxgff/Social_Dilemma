@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 import os
 
-LABELSIZE = 12  # 图像中所有label的大小
+LABELSIZE = 16  # 图像中所有label的大小
 LEFT = 0.1  # 画布设置，距离左侧大小
 BOTTOM = 0.14  # 距离底部大小
 RIGHT = 0.77  # 距离右侧大小
@@ -56,5 +56,6 @@ def draw_heatMap():
         newData = pd.DataFrame(newData, columns=['data'])
 
         draw_heatmap(newData, os.path.join(each_file, 'heatMap.svg'))
+        draw_heatmap(newData, os.path.join(each_file, 'heatMap.pdf'))
 
 draw_heatMap()

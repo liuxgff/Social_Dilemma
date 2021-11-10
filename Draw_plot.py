@@ -12,7 +12,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-LABELSIZE = 12  # 图像中所有label的大小
+LABELSIZE = 16  # 图像中所有label的大小
 LEFT = 0.1  # 画布设置，距离左侧大小
 BOTTOM = 0.14  # 距离底部大小
 RIGHT = 0.77  # 距离右侧大小
@@ -24,6 +24,7 @@ HEIGHT = WIDTH / 1.7
 # 图像像素
 DPI = 400
 
+FONT = 'Arial'
 
 def getData(dataName):
     """
@@ -37,7 +38,7 @@ def getData(dataName):
 def compare_de_fixed():
     "动态学习率与固定学习率比较"
     compareList = [getData('异质群体'), getData('固定学习率'), getData('随机动作')]
-    draw_list(plot_list=compareList, y_lable='Collective return', x_lable='Episode', figPath='动态学习率与固定学习率.svg',
+    draw_list(plot_list=compareList, y_lable='Collective return', x_lable='Episode', figPath='动态学习率与固定学习率.pdf',
               label_list=['Heterogeneous', 'Fixed learning rate', 'Random action'], colorIndex=[2, 5, 4], allReward=True)
 
 
@@ -84,7 +85,7 @@ def compare_rewardLen():
     "绘制图像"
     plt.figure(1)  # 图像编号
 
-    plt.rc('font', family='Calibri')  # 图像字体
+    plt.rc('font', family=FONT)  # 图像字体
     plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
     plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
     plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
@@ -100,6 +101,7 @@ def compare_rewardLen():
     ax.set_xlabel('Cumulative profit length')  # x轴标签
 
     plt.savefig(os.path.join(root, '比较不同累计收益长度.svg'), bbox_inches='tight')  # 图像存储, 设置分辨率
+    plt.savefig(os.path.join(root, '比较不同累计收益长度.pdf'), bbox_inches='tight')  # 图像存储, 设置分辨率
     plt.close()
 
 
@@ -122,7 +124,7 @@ def compare_all_lenReward():
     plt.figure(1)  # 图像编号
     y_lable = 'Number of apples collected'
     x_lable = 'cumulative reward'
-    plt.rc('font', family='Calibri')  # 图像字体
+    plt.rc('font', family=FONT)  # 图像字体
     plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
     plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
     plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
@@ -158,13 +160,22 @@ def compare_all_lenReward():
     ax.set_ylabel(y_lable)  # y轴标签
     ax.set_xlabel(x_lable)  # x轴标签
     # 图例设置
-    ax.legend(label_list, bbox_to_anchor=(1.01, 0), loc=3, borderaxespad=0)
+    font1 = {'family': FONT,
+             'weight': 'normal',
+             'size': 12,
+             }
+    ax.legend(label_list, bbox_to_anchor=(1.01, 0), loc=3, borderaxespad=0, prop=font1)
 
     plt.savefig('compare_diff.svg', bbox_inches='tight')  # 图像存储, 设置分辨率
+    plt.savefig('compare_diff.pdf', bbox_inches='tight')  # 图像存储, 设置分辨率
     plt.close()
 
 
 def draw_activate():
+    """
+    活动区域图
+    :return:
+    """
     root = os.path.join(os.getcwd(), 'Result')
 
     plt.figure(1)  # 图像编号
@@ -176,10 +187,10 @@ def draw_activate():
     nameList = ['Agent ' + str(p+1) for p in range(6)]
     shadow = 18
 
-    # plt.rc('font', family='Calibri')  # 图像字体
+    plt.rc('font', family=FONT)  # 图像字体
     # plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
     # plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
-    # plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
+    plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
 
     "Heterogeneous"
     data = pd.read_csv(os.path.join(root, '异质群体/activate.csv'))
@@ -195,7 +206,7 @@ def draw_activate():
         plt.plot(np.arange(len(data[i])), data[i], color=colors2[i], linewidth=1.1)
         plt.fill_between(np.arange(len(data[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
     ax.set_ylabel(y_label)  # y轴标签
-    ax.set_xlabel(x_label)  # x轴标签
+    # ax.set_xlabel(x_label)  # x轴标签
     ax.set_title('Heterogeneous')
 
     "Homogeneous high"
@@ -211,8 +222,8 @@ def draw_activate():
         downdata = [j - shadow for j in data[i]]
         plt.plot(np.arange(len(data[i])), data[i], color=colors2[i], linewidth=1.1)
         plt.fill_between(np.arange(len(data[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
-    ax.set_ylabel(y_label)  # y轴标签
-    ax.set_xlabel(x_label)  # x轴标签
+    # ax.set_ylabel(y_label)  # y轴标签
+    # ax.set_xlabel(x_label)  # x轴标签
     ax.set_title('Homogeneous high')
 
     "Homogeneous low"
@@ -245,14 +256,19 @@ def draw_activate():
         downdata = [j - shadow for j in data[i]]
         plt.plot(np.arange(len(data[i])), data[i], color=colors2[i], linewidth=1.1)
         plt.fill_between(np.arange(len(data[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
-    ax.set_ylabel(y_label)  # y轴标签
+    # ax.set_ylabel(y_label)  # y轴标签
     ax.set_xlabel(x_label)  # x轴标签
     ax.set_title('Random action')
 
     # 图例设置
-    plt.legend(nameList, bbox_to_anchor=(1.04, 0), loc=3, borderaxespad=0)
+    font1 = {'family': FONT,
+             'weight': 'normal',
+             'size': 10,
+             }
+    plt.legend(nameList, bbox_to_anchor=(1.04, 0), loc=3, borderaxespad=0, prop=font1)
     plt.tight_layout()
     plt.savefig("activate.svg", bbox_inches='tight')  # 图像存储, 设置分辨率
+    plt.savefig("activate.pdf", bbox_inches='tight')  # 图像存储, 设置分辨率
     plt.close()
 
 
@@ -265,6 +281,11 @@ def draw_random_position():
 
     plt.figure(1)  # 图像编号
     plt.figure(figsize=(WIDTH, HEIGHT))  # 自定义画布大小(width,height)
+    plt.rc('font', family=FONT)  # 图像字体
+    # plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
+    # plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
+    plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
+
     y_label = 'Position'  # y坐标轴名称
     x_label = 'Steps'  # x轴名称
 
@@ -272,6 +293,12 @@ def draw_random_position():
     FillColor2 = ['tan', 'lightcoral', 'royalblue', 'forestgreen', 'darkcyan', 'violet']
     nameList = ['Agent ' + str(p + 1) for p in range(6)]
     shadow = 12
+
+    # 图例设置
+    font1 = {'family': FONT,
+             'weight': 'normal',
+             'size': 12,
+             }
 
     "000111"
     data = pd.read_csv(os.path.join(root, '异质群体/activate.csv'))
@@ -284,9 +311,9 @@ def draw_random_position():
         downdata = [j - shadow for j in data[i]]
         plt.plot(np.arange(len(data[i])), data[i], color=colors2[i], linewidth=1.1)
         plt.fill_between(np.arange(len(data[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
-    ax.set_ylabel(y_label)  # y轴标签
-    ax.set_xlabel(x_label)  # x轴标签
-    ax.set_title('position-1')
+    ax.set_ylabel(y_label, font1)  # y轴标签
+    # ax.set_xlabel(x_label)  # x轴标签
+    ax.set_title('position-1', fontsize=LABELSIZE)
 
     "111000"
     data = pd.read_csv(os.path.join(root, '随机初始位置/111000/activate.csv'))
@@ -299,9 +326,9 @@ def draw_random_position():
         downdata = [j - shadow for j in data[i]]
         plt.plot(np.arange(len(data[i])), data[i], color=colors2[i], linewidth=1.1)
         plt.fill_between(np.arange(len(data[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
-    ax.set_ylabel(y_label)  # y轴标签
-    ax.set_xlabel(x_label)  # x轴标签
-    ax.set_title('position-2')
+    # ax.set_ylabel(y_label)  # y轴标签
+    # ax.set_xlabel(x_label)  # x轴标签
+    ax.set_title('position-2', fontsize=LABELSIZE)
 
     "000000"
     data = pd.read_csv(os.path.join(root, '随机初始位置/000000/activate.csv'))
@@ -314,9 +341,9 @@ def draw_random_position():
         downdata = [j - shadow for j in data[i]]
         plt.plot(np.arange(len(data[i])), data[i], color=colors2[i], linewidth=1.1)
         plt.fill_between(np.arange(len(data[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
-    ax.set_ylabel(y_label)  # y轴标签
-    ax.set_xlabel(x_label)  # x轴标签
-    ax.set_title('position-3')
+    # ax.set_ylabel(y_label)  # y轴标签
+    # ax.set_xlabel(x_label)  # x轴标签
+    ax.set_title('position-3', fontsize=LABELSIZE)
 
     "111111"
     data = pd.read_csv(os.path.join(root, '随机初始位置/111111/activate.csv'))
@@ -329,9 +356,9 @@ def draw_random_position():
         downdata = [j - shadow for j in data[i]]
         plt.plot(np.arange(len(data[i])), data[i], color=colors2[i], linewidth=1.1)
         plt.fill_between(np.arange(len(data[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
-    ax.set_ylabel(y_label)  # y轴标签
-    ax.set_xlabel(x_label)  # x轴标签
-    ax.set_title('position-4')
+    ax.set_ylabel(y_label, font1)  # y轴标签
+    ax.set_xlabel(x_label, font1)  # x轴标签
+    ax.set_title('position-4', fontsize=LABELSIZE)
 
     "010100"
     data = pd.read_csv(os.path.join(root, '随机初始位置/010100/activate.csv'))
@@ -344,9 +371,9 @@ def draw_random_position():
         downdata = [j - shadow for j in data[i]]
         plt.plot(np.arange(len(data[i])), data[i], color=colors2[i], linewidth=1.1)
         plt.fill_between(np.arange(len(data[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
-    ax.set_ylabel(y_label)  # y轴标签
-    ax.set_xlabel(x_label)  # x轴标签
-    ax.set_title('position-5')
+    # ax.set_ylabel(y_label)  # y轴标签
+    ax.set_xlabel(x_label, font1)  # x轴标签
+    ax.set_title('position-5', fontsize=LABELSIZE)
 
     "110110"
     data = pd.read_csv(os.path.join(root, '随机初始位置/110110/activate.csv'))
@@ -359,24 +386,24 @@ def draw_random_position():
         downdata = [j - shadow for j in data[i]]
         plt.plot(np.arange(len(data[i])), data[i], color=colors2[i], linewidth=1.1)
         plt.fill_between(np.arange(len(data[i])), downdata, updata, facecolor=FillColor2[i], alpha=0.3)
-    ax.set_ylabel(y_label)  # y轴标签
-    ax.set_xlabel(x_label)  # x轴标签
-    ax.set_title('position-6')
+    # ax.set_ylabel(y_label)  # y轴标签
+    ax.set_xlabel(x_label, font1)  # x轴标签
+    ax.set_title('position-6', fontsize=LABELSIZE)
 
 
-    # 图例设置
-    plt.legend(nameList, bbox_to_anchor=(1.04, 0), loc=3, borderaxespad=0)
+    plt.legend(nameList, bbox_to_anchor=(1.04, 0), loc=3, borderaxespad=0, prop=font1)
     plt.tight_layout()
     plt.savefig("random_position_activate.svg", bbox_inches='tight')  # 图像存储, 设置分辨率
+    plt.savefig("random_position_activate.pdf", bbox_inches='tight')  # 图像存储, 设置分辨率
     plt.close()
 
 
 # compare_rewardLen()
 compare_all_lenReward()
-# compare_heterogeneous_homogeneous()
-# draw_activate()
-# compare_de_fixed()
+# compare_heterogeneous_homogeneous()  # 异质群体与同质群体比较
+# draw_activate()  # 异质群体与同质群体的活动路线
+# compare_de_fixed()  # 动态与固定学习率比较
 
-# draw_random_position()
+# draw_random_position()  # 随机位置的活动状态
 
 

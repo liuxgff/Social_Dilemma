@@ -10,7 +10,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 
-LABELSIZE = 12  # 图像中所有label的大小
+LABELSIZE = 16  # 图像中所有label的大小
 LEFT = 0.1  # 画布设置，距离左侧大小
 BOTTOM = 0.14  # 距离底部大小
 RIGHT = 0.77  # 距离右侧大小
@@ -22,13 +22,15 @@ HEIGHT = WIDTH / 1.5
 # 图像像素
 DPI = 400
 
+FONT = 'Arial'
+
 
 # 折线图绘图设置(数据列表, y轴名称, x轴名称, 图像存储地址, 标签列表)
 def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=None, colorIndex=None, allReward=False):
     # plt.rc对全图字体进行统一修改
     plt.figure(1)  # 图像编号
 
-    plt.rc('font', family='Calibri')  # 图像字体
+    plt.rc('font', family=FONT)  # 图像字体
     plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
     plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
     plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
@@ -65,7 +67,11 @@ def draw_list(plot_list=None, y_lable='', x_lable='', figPath='', label_list=Non
 
     # 图例设置
     if label_list:
-        ax.legend(label_list, bbox_to_anchor=(1.01, 0), loc=3, borderaxespad=0)
+        font1 = {'family': FONT,
+                 'weight': 'normal',
+                 'size': 10,
+                 }
+        ax.legend(label_list, bbox_to_anchor=(1.01, 0), loc=3, borderaxespad=0, prop=font1)
     plt.savefig(figPath, bbox_inches='tight')  # 图像存储, 设置分辨率
     plt.close()
 
@@ -75,7 +81,7 @@ def draw_heatmap(data_list, figpath):
     绘制agent停留区域热力图
     :return:
     """
-    plt.rc('font', family='Arial')
+    plt.rc('font', family=FONT)
     plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
     plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
     plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
@@ -84,8 +90,8 @@ def draw_heatmap(data_list, figpath):
     apple_data = pd.DataFrame(apple_data, index=['Agent1', 'Agent2', 'Agent3', 'Agent4', 'Agent5', 'Agent6'],
                               columns=['Reward'])
     sns.heatmap(apple_data, cmap='YlOrRd', square=True, vmin=0, vmax=0.5)
-    plt.xticks(fontproperties='Arial', size=LABELSIZE)
-    plt.yticks(rotation=0, fontproperties='Arial', size=LABELSIZE)
+    plt.xticks(fontproperties=FONT, size=LABELSIZE)
+    plt.yticks(rotation=0, fontproperties=FONT, size=LABELSIZE)
     plt.savefig(figpath, bbox_inches='tight')
     plt.close()
 
@@ -96,7 +102,7 @@ def draw_boxplot(data_list, figpath, labels):
     :param figpath:
     :return:
     """
-    plt.rc('font', family='Arial')
+    plt.rc('font', family=FONT)
     plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
     plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
     plt.rc('axes', labelsize=LABELSIZE)  # 坐标轴字体大小
