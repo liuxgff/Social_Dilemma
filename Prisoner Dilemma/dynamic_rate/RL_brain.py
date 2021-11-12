@@ -9,7 +9,7 @@ import pandas as pd
 
 
 class QLearningTable:
-    def __init__(self, actions, Maxtarget, learning_rate=0.001, reward_decay=0.9, e_greedy=0.9):
+    def __init__(self, actions, Maxtarget, learning_rate=0.1, reward_decay=0.9, e_greedy=0.9):
         self.actions = actions  # a list
         self.maxlr = learning_rate
         self.lr = learning_rate
@@ -32,7 +32,9 @@ class QLearningTable:
         return action
 
     def set_learn_rate(self, current_reward):
-        self.lr = self.maxlr * max((self.Maxtarget - sum(current_reward)), 0) / self.Maxtarget
+        # self.lr = self.maxlr * max((self.Maxtarget - sum(current_reward)), 0) / self.Maxtarget
+        # self.lr = self.maxlr * max((sum(current_reward) - self.Maxtarget), 0)
+        self.lr = self.maxlr * (np.mean(current_reward) / self.Maxtarget) * (10**(-abs(self.Maxtarget - current_reward[-1])))
 
     def learn(self, s, a, r, s_):
         self.check_state_exist(s_)

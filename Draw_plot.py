@@ -197,7 +197,6 @@ def draw_activate():
     data = [list(data[i]) for i in data]
     ax = plt.subplot(221)
     ax.grid()  # 生成网格
-
     # fig1.subplots_adjust(left=LEFT, bottom=BOTTOM, right=RIGHT, top=TOP)  # 画布范围设置: 离左侧.14,距离下方.18,右侧.97,上方.97
     # fig1.set_size_inches(WIDTH, HEIGHT)  # 图像大小
     for i in range(len(data)):

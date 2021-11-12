@@ -5,6 +5,8 @@
 # ide： PyCharm
 import random
 
+import pandas as pd
+
 from RL_brain import QLearningTable
 from env import PD
 
@@ -13,16 +15,18 @@ def base():
     q1 = QLearningTable(actions=['C', 'D'])
     q2 = QLearningTable(actions=['C', 'D'])
     env = PD()
-    step = 1000
+    step = 1200
 
     epoch = 12
-
+    result = []
+    cc_count = []
     for each_epoch in range(epoch):
         sum1 = 0
         sum2 = 0
+
         PD_state = {'CC': 0, 'CD': 0, 'DC': 0, 'DD': 0}
-        state = random.sample(PD_state.keys(), 1)[0]
-        # state = 'DD'
+        # state = random.sample(PD_state.keys(), 1)[0]
+        state = 'CC'
         agent1_action = {'C': 0, 'D': 0}
         agent2_action = {'C': 0, 'D': 0}
 
@@ -47,10 +51,14 @@ def base():
             state = state_
 
             PD_state[state] += 1
+        result.append(sum1 + sum2)
+        cc_count.append(agent1_action['C'] + agent2_action['C'])
         print('epoch:', each_epoch)
         print(sum1, sum2, sum1+sum2)
         print(agent1_action)
         print(agent2_action)
         print(PD_state)
+    pd.DataFrame(result, columns=['result']).to_csv('result.csv', index=False)
+    pd.DataFrame(cc_count, columns=['count']).to_csv('cc_count.csv', index=False)
 
 base()
