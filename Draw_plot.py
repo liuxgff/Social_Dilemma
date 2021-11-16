@@ -123,7 +123,7 @@ def compare_all_lenReward():
     "设置画板"
     plt.figure(1)  # 图像编号
     y_lable = 'Number of apples collected'
-    x_lable = 'cumulative reward'
+    x_lable = r'$\tau $'
     plt.rc('font', family=FONT)  # 图像字体
     plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
     plt.rc('ytick', labelsize=LABELSIZE)  # y轴刻度大小
@@ -136,7 +136,7 @@ def compare_all_lenReward():
     # ax.spines['top'].set_visible(False)  # 取消左边框
 
     fig.set_size_inches(WIDTH, HEIGHT)  # 图像大小
-    label_list = ['apple_reward=1', 'apple_reward=4', 'apple_reward=8', 'apple_reward=10', 'apple_reward=14', 'apple_reward=16']  # 图例
+    label_list = [r'$r_a=1$', r'$r_a=4$', r'$r_a=8$', r'$r_a=10$', r'$r_a=14$', r'$r_a=16$']  # 图例
     colors = ['darkorange', 'r', 'b', 'g', 'purple', 'y']
     markers = ['^', 's', 'o', 'd', 'X', '.']
     different_reward = []
