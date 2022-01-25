@@ -122,7 +122,7 @@ def compare_all_lenReward():
 
     "设置画板"
     plt.figure(1)  # 图像编号
-    y_lable = 'Number of apples collected'
+    y_lable = 'Number of apples'
     x_lable = r'$\tau $'
     plt.rc('font', family=FONT)  # 图像字体
     plt.rc('xtick', labelsize=LABELSIZE)  # x轴刻度大小
